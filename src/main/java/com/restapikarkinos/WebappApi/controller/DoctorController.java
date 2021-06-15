@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,7 +32,7 @@ public class DoctorController {
   @Autowired
   DoctorRepository doctorRepository;
 
-  @GetMapping("/getAllDoctors")
+  @GetMapping("/doctors")
   public ResponseEntity<List<Doctor>> getAllTutorials() {
   try {
       List<Doctor> doctors = new ArrayList<Doctor>();
@@ -58,15 +59,18 @@ public class DoctorController {
     }
   }
 
-  @GetMapping("/searchdoctor")
-  public ResponseEntity<Doctor> searchDoctor(@RequestParam String specialization, @RequestParam String city) {
-    Optional<Doctor> doctorData = doctorRepository.findBySpecializationAndCity(specialization, city);
-
-    if (doctorData.isPresent()) {
-      return new ResponseEntity<>(doctorData.get(), HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  @GetMapping("/finddoctors")
+  public ResponseEntity<List<Doctor>> findBySpecialization(@ModelAttribute Doctor doctor) {
+    try {
+        List<Doctor> doctors = doctorRepository.findBySpecializationAndCity(doctor.getSpecialization(), doctor.getCity());
+    
+        if (doctors.isEmpty()) {
+          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(doctors, HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
   }
 
   @PutMapping("/doctors/{id}")
@@ -88,7 +92,7 @@ public class DoctorController {
     }
   }
 
-  @DeleteMapping("/delete/{id}")
+  @GetMapping("/doctors/{id}")
   public ResponseEntity<HttpStatus> deleteDoctor(@PathVariable("id") String id) {
     try {
         doctorRepository.deleteById(id);
