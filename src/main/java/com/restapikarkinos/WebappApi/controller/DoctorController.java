@@ -1,50 +1,101 @@
 package com.restapikarkinos.WebappApi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.restapikarkinos.WebappApi.model.Doctor;
 import com.restapikarkinos.WebappApi.repository.DoctorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = "https://kumquat-narwhal-6msaatvi.ws-us09.gitpod.io")
 @RestController
-@RequestMapping("/doctor")
+//@EnableAutoConfiguration
+@RequestMapping("/api")
 public class DoctorController {
     
-    @Autowired
-    DoctorRepository doctorRepository;
+  @Autowired
+  DoctorRepository doctorRepository;
 
-    //get information from view to controller using a form
-    @GetMapping("/new_doctor")
-    public String new_doctor() {
-
-       return "new_doctor";
-    }
-
-    @GetMapping("/view_all_doctor")
-    public List<Doctor> getDoctors() {
-
+  @GetMapping("/getAllDoctors")
+  public ResponseEntity<List<Doctor>> getAllTutorials() {
+  try {
+      List<Doctor> doctors = new ArrayList<Doctor>();
+    
+      doctorRepository.findAll().forEach(doctors::add);
       
-      
-    }
-
-    @PostMapping("/create_new_doctor")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
-    try {
-        System.out.println("hello");
-        Doctor _doctor = doctorRepository.save(new Doctor(doctor.getFirstName(), doctor.getLastName(), doctor.getSpecialization(), doctor.getPhoneNumber(), doctor.getAddress(), doctor.getCity(), doctor.getPincode()));
-        return new ResponseEntity<>(_doctor, HttpStatus.CREATED);
-      } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (doctors.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
+      return new ResponseEntity<>(doctors, HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
 
+  @PostMapping("/doctors")
+  public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
+  try {
+      System.out.println("hello");
+      Doctor _doctor = doctorRepository.save(doctor);
+      return new ResponseEntity<>(_doctor, HttpStatus.CREATED);
+    } catch (Exception e) {
+        return new ResponseEntity<>(doctor, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping("/searchdoctor")
+  public ResponseEntity<Doctor> searchDoctor(@RequestParam String specialization, @RequestParam String city) {
+    Optional<Doctor> doctorData = doctorRepository.findBySpecializationAndCity(specialization, city);
+
+    if (doctorData.isPresent()) {
+      return new ResponseEntity<>(doctorData.get(), HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @PutMapping("/doctors/{id}")
+  public ResponseEntity<Doctor> updateDoctor(@PathVariable("id") String id, @RequestBody Doctor doctor) {
+    Optional<Doctor> doctorData = doctorRepository.findById(id);
+
+    if (doctorData.isPresent()) {
+      Doctor _doctor = doctorData.get();
+      _doctor.setFirstName(doctor.getFirstName());
+      _doctor.setLastName(doctor.getLastName());
+      _doctor.setSpecialization(doctor.getSpecialization());
+      _doctor.setPhoneNumber(doctor.getPhoneNumber());
+      _doctor.setAddress(doctor.getAddress());
+      _doctor.setCity(doctor.getCity());
+      _doctor.setPincode(doctor.getPincode());
+      return new ResponseEntity<>(doctorRepository.save(_doctor), HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<HttpStatus> deleteDoctor(@PathVariable("id") String id) {
+    try {
+        doctorRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+  }
 
 }

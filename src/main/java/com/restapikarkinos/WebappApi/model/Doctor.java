@@ -5,7 +5,9 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+//@ResponseBody
 @Document(collection = "doctor")
 public class Doctor {
   @Id
@@ -113,5 +115,13 @@ public class Doctor {
   public void setPincode(String pincode) {
     this.pincode = pincode;
   }
+
+  @Override
+  public String toString() {
+    // TODO Auto-generated method stub
+    return super.toString();
+  }
+
+  
   
 }
