@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -54,8 +53,8 @@ public class Patient {
   private String photos;
   
 
-  // @OneToMany(mappedBy= "patients",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-  // private List<Documents> documents;
+  @OneToMany(mappedBy= "patients",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+  private List<Documents> documents;
 
   protected Patient() {
 
@@ -63,7 +62,7 @@ public class Patient {
  
    
 
-  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos) {
+  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos,List<Documents> documents) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
@@ -71,7 +70,7 @@ public class Patient {
     this.city = city;
     this.pincode = pincode;
     this.photos = photos;
-    // this.documents = documents;
+    this.documents = documents;
   }
 
   public Long getId() {

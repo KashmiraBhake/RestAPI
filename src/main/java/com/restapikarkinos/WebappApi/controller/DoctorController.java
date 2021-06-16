@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.restapikarkinos.WebappApi.model.Doctor;
 import com.restapikarkinos.WebappApi.repository.DoctorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "https://kumquat-narwhal-6msaatvi.ws-us09.gitpod.io")
@@ -49,7 +49,7 @@ public class DoctorController {
   }
 
   @PostMapping("/doctors")
-  public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
+  public ResponseEntity<Doctor> createDoctor(@Valid @RequestBody Doctor doctor) {
   try {
       System.out.println("hello");
       Doctor _doctor = doctorRepository.save(doctor);
@@ -106,7 +106,7 @@ public class DoctorController {
     }
   }
 
-  @GetMapping("/doctors/{id}")
+  @DeleteMapping("/doctors/{id}")
   public ResponseEntity<HttpStatus> deleteDoctor(@PathVariable("id") String id) {
     try {
         doctorRepository.deleteById(id);

@@ -13,13 +13,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import com.restapikarkinos.WebappApi.model.Documents;
 import com.restapikarkinos.WebappApi.model.Patient;
+import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +40,9 @@ public class PatientController {
     
   @Autowired
   PatientRepository patientRepository;
+
+  @Autowired
+  DocumentsRepository documentsRepository;
 
   @GetMapping("/patients")
   public ResponseEntity<List<Patient>> getAllPatient() {
@@ -79,6 +85,20 @@ public class PatientController {
       }
   }
 
+  @GetMapping("/findpatients/{id}")
+  public ResponseEntity<Patient> findById(@ModelAttribute Patient patient,@PathVariable("id") String id) {
+    try {
+        Optional<Patient> patientData = patientRepository.findById(patient.getId());
+      if (patientData.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      Patient _patient = patientData.get();
+      return new ResponseEntity<>(patientRepository.save(_patient), HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @PutMapping("/patients/{id}")
   public ResponseEntity<Patient> updatePatient(@PathVariable("id") Long id, @RequestBody Patient patient) {
     Optional<Patient> patientData = patientRepository.findById(id);
@@ -97,7 +117,7 @@ public class PatientController {
     }
   }
 
-  @GetMapping("/patients/{id}")
+  @DeleteMapping("/patients/{id}")
   public ResponseEntity<HttpStatus> deletePatient(@PathVariable("id") Long id) {
     try {
         patientRepository.deleteById(id);
@@ -114,13 +134,13 @@ public class PatientController {
   
     System.out.println(id);
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-    System.out.println(fileName);
     if(multipartFile.isEmpty()) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Request must contain file");
     }
     Optional<Patient> patientData = patientRepository.findById(id);
     Patient _patient = patientData.get();
     _patient.setPhotos(fileName);
+    System.out.println(fileName);
 
     _patient.setFirstName(_patient.getFirstName());
     _patient.setLastName(_patient.getLastName());
@@ -146,5 +166,35 @@ public class PatientController {
   
     return ResponseEntity.ok("working");
    }
+
+   @PostMapping("/docs/{id}")
+    public ResponseEntity <String> savedoc(@RequestParam("document") MultipartFile multipartFile,
+    @PathVariable (name = "id") Patient id) 
+    throws IOException{
+    
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        documentsRepository.save(new Documents(fileName, id));
+       List<Documents> documentsData = documentsRepository.findByPatients(id);
+     
+        Documents _documents = documentsData.get(0);
+        Documents savedDocuments = documentsRepository.save(_documents);
+
+        String uploadDir = "./patient-docs/" + savedDocuments.getPatients().getId();
+
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);}
+
+        try(InputStream inputStream = multipartFile.getInputStream()){
+        Path filePath = uploadPath.resolve(fileName);
+        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {        
+            throw new IOException("Could not save file: " + fileName, ioe);
+        }
+
+
+            
+        return ResponseEntity.ok("working");
+    }
 
 }
