@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="full-page">
+        <div class=navbar1>
+            <a href="/">Healthcare<br> WebApp</a>
+            <div class="title">
+                <h1>All Doctors</h1>
+            </div>
+        </div>
+        <div id="all-patient" class="all-p-page">
+            <div class="all-patient-form">
+                <table class="styled-table">
+                    <thead>
+                        <tr class="active-row">
+                            <th>Doctor ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Specialization</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>Pin Code</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="doctor : ${doctors}">
+                            <td th:text="${doctor.id}"></td>
+                            <td th:text="${doctor.firstName}"></td>
+                            <td th:text="${doctor.lastName}"></td>
+                            <td th:text="${doctor.specialization}"></td>
+                            <td th:text="${doctor.phoneNumber}"></td>
+                            <td th:text="${doctor.address}"></td>
+                            <td th:text="${doctor.city}"></td>
+                            <td th:text="${doctor.pincode}"></td>
+                            <td>
+                                <a th:href="@{'/edit1/' + ${doctor.id}}"><i class="material-icons">edit</i></a>
+
+                                <a th:href="@{'/delete1/' + ${doctor.id}}"><i class="material-icons">delete</i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
