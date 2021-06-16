@@ -1,0 +1,35 @@
+  
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>Edit Doctor</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+        </head>
+        <body>
+        <div class="full-page">
+                <div class=navbar1>
+                        <a href="/">Healthcare<br> WebApp</a>
+                </div>
+                <div id="new-doctor"class="login-page">
+                        <div class="form-box">
+                                <div class="button-box">
+                                        <div id='btn'></div>
+                                        <div type="text" class="txt">Edit your details</div>
+                                </div>
+                                <form id='login'action="#" th:action="@{'/update1/' + ${id}}" th:object="${doctor}"method="post"class="input-group-login">
+                                        <input type="text" name="id"th:field="*{id}" readonly="readonly" class="input-field1">
+                                        <input type="text" name="firstName"th:field="*{firstName}" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
+                                        <input type="text" name="lastName"th:field="*{lastName}" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
+                                        <input type="text" name="specialization"th:field="*{specialization}" pattern="^[A-Za-z]{3,100}$" title="Only alphabets are allowed" required class="input-field1">
+                                        <input type="text" name="phoneNumber"th:field="*{phoneNumber}" pattern="^[1-9][0-9]{9}$" maxlength="10" title="Invalid number" required class="input-field1">
+                                        <input type="text" name="address"th:field="*{address}" pattern="^[a-zA-Z0-9,'.]{10,2000}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
+                                        <input type="text" name="city"th:field="*{city}" pattern="^[A-Za-z]{3,100}$" title="Only alphabets are allowed" required class="input-field1">
+                                        <input type="text" name="pincode"th:field="*{pincode}" pattern="^[1-9][0-9]{5}$" maxlength="6" title="pincode should be exact 6 digit" required class="input-field1">
+                                        <button type ="submit" class="submit-btn">Submit</button>
+                                </form>
+                        </div>
+                </div>
+        </div>
+        </body>
+</html>

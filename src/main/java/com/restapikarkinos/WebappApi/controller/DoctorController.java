@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+//import java.util.Optional;
 
 //import javax.validation.Valid;
 
@@ -19,23 +20,26 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-@RequestMapping("/doctor")
+//@RequestMapping("/doctor")
 public class DoctorController {
   private static final String GET_ALL_DOCTORS_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
   private static final String CREATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
   private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
-
-    static RestTemplate restTemplate = new RestTemplate();
+  private static final String GET_DOCTOR_BY_ID_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/{id}";
+  private static final String UPDATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors/{id}";  
+  static RestTemplate restTemplate = new RestTemplate();
 
     //***************************NEW DOCTOR FORM************************************************* */
 
@@ -120,10 +124,104 @@ public class DoctorController {
         ObjectMapper mapper = new ObjectMapper();
         List<Doctor> doctor = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_DOCTOR_BY_SP_CT_API, String.class,param),Doctor[].class));
         System.out.println(doctor.get(0).getFirstName());
-        // Doctor doctor = restTemplate.getForObject(GET_DOCTOR_BY_SP_CT_API,Doctor.class,param);
-        // System.out.println(restTemplate.getForObject(GET_DOCTOR_BY_SP_CT_API,Doctor.class,param));
+
         modelAndView.setViewName("search_doctor_result");
         modelAndView.addObject("doctors", doctor);
         return modelAndView;
       }
+
+      //***************************EDIT DOCTOR FORM************************************************* */
+      @RequestMapping(value = "/edit1/{id}",method=RequestMethod.GET)
+      public ModelAndView showEditDoctorPage(@PathVariable(name = "id") String id,@ModelAttribute("doctor") Doctor doctor) throws JsonMappingException, JsonProcessingException, RestClientException {
+      
+        Map<String, String> param = new HashMap<>();
+        param.put("id", id);
+       
+        Doctor result = restTemplate.getForObject(GET_DOCTOR_BY_ID_API,Doctor.class,param);
+        
+        System.out.println(result.getFirstName());
+     
+          ModelAndView modelAndView = new ModelAndView();
+          modelAndView.setViewName("edit_doctor");
+          modelAndView.addObject("doctor",result);
+          modelAndView.addObject("firstName", result.getFirstName());
+          modelAndView.addObject("lastName", result.getLastName());
+        modelAndView.addObject("specialization", result.getSpecialization());
+        modelAndView.addObject("phoneNumber", result.getPhoneNumber());
+        modelAndView.addObject("address", result.getAddress());
+        modelAndView.addObject("city", result.getCity());
+        modelAndView.addObject("pincode", result.getPincode());
+          modelAndView.addObject("id", id);
+         
+          return modelAndView;
+      }
+       //***************************UPDATE DOCTOR************************************************* */
+       @RequestMapping(value ="/update1/{id}",method=RequestMethod.POST)
+       private ModelAndView callUpdateDoctor(@PathVariable String id, @ModelAttribute Doctor doctor,
+       @RequestParam String firstName,
+       @RequestParam String lastName,
+       @RequestParam String specialization,
+       @RequestParam String phoneNumber,
+       @RequestParam String address,
+       @RequestParam String city,
+       @RequestParam String pincode){
+         System.out.println("1");
+        
+         System.out.println(firstName);
+         System.out.println("2");
+         System.out.println(lastName);
+         System.out.println("3");
+        Map<String, String> param = new HashMap<>();
+        System.out.println("4");
+        param.put("id", id);
+        System.out.println("5");
+        ModelAndView modelAndView = new ModelAndView();
+        System.out.println("6");
+        Doctor _doctor = new Doctor(firstName,lastName,specialization,phoneNumber,address,city,pincode);
+         restTemplate.put(UPDATE_DOCTOR_API,_doctor,param);
+      
+        System.out.println("8");
+        modelAndView.setViewName("submit_doctor");
+        System.out.println("9");
+        modelAndView.addObject("firstName", firstName);
+
+        modelAndView.addObject("lastName", lastName);
+        modelAndView.addObject("specialization", specialization);
+        modelAndView.addObject("phoneNumber", phoneNumber);
+        modelAndView.addObject("address", address);
+        modelAndView.addObject("city", city);
+        modelAndView.addObject("pincode", pincode);
+
+        return modelAndView;
+       }
+      //  @RequestMapping(value ="/update1/{id}",method=RequestMethod.POST)
+      //  private @ResponseBody ModelAndView callUpdateDoctor(@PathVariable String id, @ModelAttribute Doctor doctor){
+      //    System.out.println("1");
+      //    System.out.println(doctor.getFirstName());
+      //    System.out.println("2");
+      //    System.out.println(doctor.getLastName());
+      //    System.out.println("3");
+      //   Map<String, String> param = new HashMap<>();
+      //   System.out.println("4");
+      //   param.put("id", id);
+      //   System.out.println("5");
+      //   ModelAndView modelAndView = new ModelAndView();
+      //   System.out.println("6");
+      //   ResponseEntity<Doctor> _doctor= restTemplate.postForEntity(UPDATE_DOCTOR_API,doctor, Doctor.class,param);
+      //   System.out.println("7");
+      //   System.out.println(_doctor.getBody());
+      //   System.out.println("8");
+      //   modelAndView.setViewName("submit_doctor");
+      //   System.out.println("9");
+      //   modelAndView.addObject("firstName", doctor.getFirstName());
+
+      //   modelAndView.addObject("lastName", doctor.getLastName());
+      //   modelAndView.addObject("specialization", doctor.getSpecialization());
+      //   modelAndView.addObject("phoneNumber", doctor.getPhoneNumber());
+      //   modelAndView.addObject("address", doctor.getAddress());
+      //   modelAndView.addObject("city", doctor.getCity());
+      //   modelAndView.addObject("pincode", doctor.getPincode());
+
+      //   return modelAndView;
+      //  }
 }
