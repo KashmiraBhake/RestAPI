@@ -19,9 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,12 +29,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/photos/{id}";
+  private static final String GET_ALL_PATIENTS_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/photos/{id}";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -176,7 +173,7 @@ public class PatientController {
        ModelAndView modelAndView = new ModelAndView();
        System.out.println("6");
        //Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode);
-      Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode,patient.getPhotos());
+      Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode,patient.getPhotos(),patient.getDocuments());
         restTemplate.put(UPDATE_PATIENT_API,_patient,param);
      
        System.out.println("8");
@@ -233,9 +230,9 @@ public class PatientController {
       System.out.println(patient1.getPhotos());
       ModelAndView modelAndView = new ModelAndView();
       System.out.println("**********"+multipartFile.getOriginalFilename());
-      Patient _patient = new Patient(patient1.getFirstName(),patient1.getLastName(),patient1.getAge(),patient1.getGender(),patient1.getCity(),patient1.getPincode(),multipartFile.getOriginalFilename());
+      Patient _patient = new Patient(patient1.getFirstName(),patient1.getLastName(),patient1.getAge(),patient1.getGender(),patient1.getCity(),patient1.getPincode(),multipartFile.getOriginalFilename(),patient1.getDocuments());
       System.out.println("%----------->");
-        restTemplate.put(UPDATE_PATIENT_IMG_API,_patient,Patient.class, param);
+        restTemplate.put(UPDATE_PATIENT_IMG_API,_patient, param);
 
       modelAndView.setViewName("image_upload_message");
        return modelAndView;

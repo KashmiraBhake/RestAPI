@@ -34,11 +34,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 //@RequestMapping("/doctor")
 public class DoctorController {
-  private static final String GET_ALL_DOCTORS_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors";
-  private static final String CREATE_DOCTOR_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors";
-  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
-  private static final String GET_DOCTOR_BY_ID_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/finddoctors/{id}";
-  private static final String UPDATE_DOCTOR_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors/{id}";  
+  private static final String GET_ALL_DOCTORS_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/doctors";
+  private static final String CREATE_DOCTOR_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/doctors";
+  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
+  private static final String GET_DOCTOR_BY_ID_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/finddoctors/{id}";
+  private static final String UPDATE_DOCTOR_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/doctors/{id}";  
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************NEW DOCTOR FORM************************************************* */

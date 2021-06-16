@@ -42,9 +42,9 @@
                                             <td th:text="${doctor.city}"></td>
                                             <td th:text="${doctor.pincode}"></td>
                                             <td>
-                                                <a th:href="@{'doctor/edit1/' + ${doctor.id}}"><i class="material-icons">edit</i></a>
+                                                <a th:href="@{'/edit1/' + ${doctor.id}}"><i class="material-icons">edit</i></a>
 
-                                                <a th:href="@{'doctor/delete1/' + ${doctor.id}}"><i class="material-icons">delete</i></a>
+                                                <a th:href="@{'/delete1/' + ${doctor.id}}"><i class="material-icons">delete</i></a>
                                             </td>
                                         </tr>
                                         </tbody>
