@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,11 +34,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 //@RequestMapping("/doctor")
 public class DoctorController {
-  private static final String GET_ALL_DOCTORS_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
-  private static final String CREATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
-  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
-  private static final String GET_DOCTOR_BY_ID_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/{id}";
-  private static final String UPDATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors/{id}";  
+  private static final String GET_ALL_DOCTORS_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/doctors";
+  private static final String CREATE_DOCTOR_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/doctors";
+  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
+  private static final String GET_DOCTOR_BY_ID_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/finddoctors/{id}";
+  private static final String UPDATE_DOCTOR_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/doctors/{id}";  
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************NEW DOCTOR FORM************************************************* */
@@ -81,7 +81,7 @@ public class DoctorController {
 
     //***************************VIEW ALL DOCTORS************************************************* */
     
-    @RequestMapping(value="/view_all_doc",method=RequestMethod.GET)
+    @RequestMapping(value="/view_all_doctor",method=RequestMethod.GET)
      private ModelAndView callGetAllDoctorsAPI() throws JsonMappingException, JsonProcessingException, RestClientException{
 
         HttpHeaders headers = new HttpHeaders();
@@ -194,34 +194,4 @@ public class DoctorController {
 
         return modelAndView;
        }
-      //  @RequestMapping(value ="/update1/{id}",method=RequestMethod.POST)
-      //  private @ResponseBody ModelAndView callUpdateDoctor(@PathVariable String id, @ModelAttribute Doctor doctor){
-      //    System.out.println("1");
-      //    System.out.println(doctor.getFirstName());
-      //    System.out.println("2");
-      //    System.out.println(doctor.getLastName());
-      //    System.out.println("3");
-      //   Map<String, String> param = new HashMap<>();
-      //   System.out.println("4");
-      //   param.put("id", id);
-      //   System.out.println("5");
-      //   ModelAndView modelAndView = new ModelAndView();
-      //   System.out.println("6");
-      //   ResponseEntity<Doctor> _doctor= restTemplate.postForEntity(UPDATE_DOCTOR_API,doctor, Doctor.class,param);
-      //   System.out.println("7");
-      //   System.out.println(_doctor.getBody());
-      //   System.out.println("8");
-      //   modelAndView.setViewName("submit_doctor");
-      //   System.out.println("9");
-      //   modelAndView.addObject("firstName", doctor.getFirstName());
-
-      //   modelAndView.addObject("lastName", doctor.getLastName());
-      //   modelAndView.addObject("specialization", doctor.getSpecialization());
-      //   modelAndView.addObject("phoneNumber", doctor.getPhoneNumber());
-      //   modelAndView.addObject("address", doctor.getAddress());
-      //   modelAndView.addObject("city", doctor.getCity());
-      //   modelAndView.addObject("pincode", doctor.getPincode());
-
-      //   return modelAndView;
-      //  }
 }

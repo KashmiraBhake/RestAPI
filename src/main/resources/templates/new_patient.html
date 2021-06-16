@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>New Patient</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+        </head>
+        <body>
+        <div class="full-page">
+                <div class=navbar1>
+                        <a href="/">Healthcare<br> WebApp</a>
+                </div>
+                <div id="new-patient"class="login-page">
+                        <div class="form-box1">
+                                <div class="button-box">
+                                        <div id='btn'></div>
+                                        <div type="text" class="txt">Enter details below</div>
+                                </div>
+                                <form id='login'action="create_new_patient" method="post"class="input-group-login">
+                                        <input type="text" name="firstName" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." placeholder='First Name' required class="input-field">
+                                        <input type="text" name="lastName" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." placeholder='Last Name' required class="input-field">
+                                        <input type="number" name="age" min="0" max="125" title="age should be between 0-125" placeholder='Age' required class="input-field">
+                                        <div class="input-field11">
+                                                <input id="male" name="gender" type="radio" value="Male"required>
+                                                <label>Male</label>&emsp;  &emsp;  
+                                                <input id="female" name="gender" type="radio" value="Female"required>
+                                                <label>Female</label>&emsp;  &emsp;  
+                                                <input id="other" name="gender" type="radio" value="Other"required>
+                                                <label>Other</label>
+                                        </div>
+                                        
+                                        <input type="text" name="city" pattern="^[A-Za-z]{3,100}$" title="Only alphabets are allowed" placeholder='City' required class="input-field">
+                                        <input type="text" name="pincode" pattern="^[1-9][0-9]{5}$" maxlength="6" title="pincode should be exact 6 digit" placeholder='Area Pincode' required class="input-field">
+                                        <button type ="submit" class="submit-btn">Submit</button>
+                                </form>
+
+
+                        </div>
+                </div>
+        </div>
+        </body>
+
+
+</html>
