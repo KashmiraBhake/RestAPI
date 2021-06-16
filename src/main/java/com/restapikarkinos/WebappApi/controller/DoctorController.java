@@ -3,7 +3,8 @@ package com.restapikarkinos.WebappApi.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.validation.Valid;
+
+//import javax.validation.Valid;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -13,9 +14,10 @@ import com.restapikarkinos.WebappApi.model.Doctor;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+//import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,35 +44,32 @@ public class DoctorController {
     }
 
     //***************************NEW DOCTOR SUBMIT************************************************ */
-    // @RequestMapping(path="/create_new_doctor",method=RequestMethod.POST)
-    // public ModelAndView create_new_doctor(@Valid @ModelAttribute Doctor doctor, BindingResult bindingResult,
-    //     @RequestParam String firstName,
-    //     @RequestParam String lastName,
-    //     @RequestParam String specialization,
-    //     @RequestParam String phoneNumber,
-    //     @RequestParam String address,
-    //     @RequestParam String city,
-    //     @RequestParam String pincode) {
-    //       ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(path="/create_new_doctor",method=RequestMethod.POST)
+    private ModelAndView callCreateDoctorsAPI(@ModelAttribute Doctor doctor,
+        @RequestParam String firstName,
+        @RequestParam String lastName,
+        @RequestParam String specialization,
+        @RequestParam String phoneNumber,
+        @RequestParam String address,
+        @RequestParam String city,
+        @RequestParam String pincode){
 
-    //         if (bindingResult.hasErrors()) {       
-        
-    //             System.out.println(bindingResult);
-                
-    //             modelAndView.setViewName("new_doctor");
-    //             return modelAndView;
-    //         }
-    //     modelAndView.setViewName("submit_doctor");
-    //     modelAndView.addObject("firstName", firstName);
-    //     modelAndView.addObject("lastName", lastName);
-    //     modelAndView.addObject("specialization", specialization);
-    //     modelAndView.addObject("phoneNumber", phoneNumber);
-    //     modelAndView.addObject("address", address);
-    //     modelAndView.addObject("city", city);
-    //     modelAndView.addObject("pincode", pincode);
+         //Doctor _doctor =new Doctor(firstName,lastName,specialization,phoneNumber,address,city,pincode);
+          ResponseEntity<Doctor> doctor2= restTemplate.postForEntity(CREATE_DOCTOR_API,doctor, Doctor.class);
+          System.out.println(doctor2.getBody());
+          ModelAndView modelAndView = new ModelAndView();
 
-    //     return modelAndView;
-    // }
+          modelAndView.setViewName("submit_doctor");
+              modelAndView.addObject("firstName", firstName);
+              modelAndView.addObject("lastName", lastName);
+              modelAndView.addObject("specialization", specialization);
+              modelAndView.addObject("phoneNumber", phoneNumber);
+              modelAndView.addObject("address", address);
+              modelAndView.addObject("city", city);
+              modelAndView.addObject("pincode", pincode);
+
+          return modelAndView;
+        }
 
     //***************************VIEW ALL DOCTORS************************************************* */
     
