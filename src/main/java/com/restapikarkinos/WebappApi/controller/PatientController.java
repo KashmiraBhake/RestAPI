@@ -19,21 +19,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 //import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-red-boar-l73z4lp0.ws-us08.gitpod.io/api/patients/{id}";  
+  private static final String GET_ALL_PATIENTS_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/photos/{id}";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -128,9 +132,9 @@ public class PatientController {
     }
      //***************************EDIT PATIENT FORM************************************************* */
      @RequestMapping(value = "/edit/{id}",method=RequestMethod.GET)
-     public ModelAndView showEditPatientPage(@PathVariable(name = "id") String id,@ModelAttribute("patient") Patient patient) throws JsonMappingException, JsonProcessingException, RestClientException {
+     public ModelAndView showEditPatientPage(@PathVariable(name = "id") Long id,@ModelAttribute("patient") Patient patient) throws JsonMappingException, JsonProcessingException, RestClientException {
      
-       Map<String, String> param = new HashMap<>();
+       Map<String, Long> param = new HashMap<>();
        param.put("id", id);
       
        Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
@@ -152,7 +156,7 @@ public class PatientController {
      }
       //***************************UPDATE PATIENT************************************************* */
       @RequestMapping(value ="/update/{id}",method=RequestMethod.POST)
-      private ModelAndView callUpdatePatient(@PathVariable String id, @ModelAttribute Patient patient,
+      private ModelAndView callUpdatePatient(@PathVariable Long id, @ModelAttribute Patient patient,
       @RequestParam String firstName,
         @RequestParam String lastName,
         @RequestParam String age,
@@ -165,13 +169,14 @@ public class PatientController {
         System.out.println("2");
         System.out.println(lastName);
         System.out.println("3");
-       Map<String, String> param = new HashMap<>();
+       Map<String, Long> param = new HashMap<>();
        System.out.println("4");
        param.put("id", id);
        System.out.println("5");
        ModelAndView modelAndView = new ModelAndView();
        System.out.println("6");
-       Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode);
+       //Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode);
+      Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode,patient.getPhotos());
         restTemplate.put(UPDATE_PATIENT_API,_patient,param);
      
        System.out.println("8");
@@ -187,5 +192,54 @@ public class PatientController {
 
        return modelAndView;
       }
+      //***************************UPLOAD PATIENT PHOTO FORM************************************************* */
+
+      @RequestMapping(path="/upload_image/{id}",method = RequestMethod.GET)
+    public ModelAndView showupload_pic_page(@PathVariable(name = "id") Long id,@ModelAttribute Patient patient) {
+      System.out.println("in upload image----------->");
+      Map<String, Long> param = new HashMap<>();
+      param.put("id", id);
+      System.out.println("id is ------>"+id);
+      Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
+      System.out.println("fist name is----------->");
+      System.out.println(result.getFirstName());
+      System.out.println(result.getLastName());
+      System.out.println(result.getAge());
+      System.out.println(result.getGender());
+      System.out.println("photo is----------->");
+      System.out.println(result.getPhotos());
+
+    ModelAndView modelAndView = new ModelAndView();
+    modelAndView.setViewName("upload_image");
+    modelAndView.addObject("patient", result);
+    System.out.println("result -------->"+result.getLastName());
+    modelAndView.addObject("id", id);
+    return modelAndView;
+    }
+
+    //***************************UPLOAD PATIENT PHOTO ****************************************************** */
+
+    @RequestMapping(path="/photos/add/{id}",method=RequestMethod.POST)
+    public ModelAndView savePatientpic(@ModelAttribute Patient patient,
+    @RequestParam("image") MultipartFile multipartFile, 
+    @PathVariable Long id){
+      System.out.println("in add image----------->");
+      Map<String, Long> param = new HashMap<>();
+      param.put("id", id);
+      System.out.println("id is ------>"+id);
+      Patient patient1 = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
+      System.out.println(patient1.getFirstName());
+      System.out.println("photo is----------->");
+      System.out.println(patient1.getPhotos());
+      ModelAndView modelAndView = new ModelAndView();
+      System.out.println("**********"+multipartFile.getOriginalFilename());
+      Patient _patient = new Patient(patient1.getFirstName(),patient1.getLastName(),patient1.getAge(),patient1.getGender(),patient1.getCity(),patient1.getPincode(),multipartFile.getOriginalFilename());
+      System.out.println("%----------->");
+        restTemplate.put(UPDATE_PATIENT_IMG_API,_patient,Patient.class, param);
+
+      modelAndView.setViewName("image_upload_message");
+       return modelAndView;
+    }
+
 
 }

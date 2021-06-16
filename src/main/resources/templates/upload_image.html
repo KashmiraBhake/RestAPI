@@ -1,0 +1,28 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>Upload Images</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+        </head>
+        <body>
+                <div class="full-page">
+                        <div class=navbar1>
+                                <a href="/">Healthcare<br> WebApp</a>
+                        </div>
+                        <div id="search-patient"class="search-page">
+                                <div class="search-form">
+                                        <div class="search-button-box">
+                                                <div id='search-btn'></div>
+                                                <div type="text" class=txt>Upload patients' profile picture</div>
+                                        </div>
+                                        <form action="#" th:action="@{'/photos/add/' + ${id}}"  method="post" enctype="multipart/form-data" class="input-group-search">
+                                            <input type="file" name="image" accept="image/*" required class="input-field">
+                                            <button type ="submit" value="Upload" class="submit-btn">Submit</button>
+                                    </form>
+                                </div>
+                        </div>
+                </div>
+        </body>
+</html>
