@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
+
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,12 +17,9 @@ import com.restapikarkinos.WebappApi.model.Patient;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-//@CrossOrigin(origins = "https://kumquat-narwhal-6msaatvi.ws-us09.gitpod.io")
 @RestController
-//@EnableAutoConfiguration
 @RequestMapping("/api")
 public class PatientController {
     
@@ -57,7 +55,7 @@ public class PatientController {
   }
 
   @PostMapping("/patients")
-  public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+  public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
   try {
       System.out.println("hello");
       Patient _patient = patientRepository.save(patient);
