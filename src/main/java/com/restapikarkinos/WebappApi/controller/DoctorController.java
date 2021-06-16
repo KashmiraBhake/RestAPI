@@ -59,6 +59,20 @@ public class DoctorController {
     }
   }
 
+  @GetMapping("/finddoctors/{id}")
+  public ResponseEntity<Doctor> findById(@ModelAttribute Doctor doctor,@PathVariable("id") String id) {
+    try {
+        Optional<Doctor> doctorData = doctorRepository.findById(doctor.getId());
+      if (doctorData.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      Doctor _doctor = doctorData.get();
+      return new ResponseEntity<>(doctorRepository.save(_doctor), HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @GetMapping("/finddoctors")
   public ResponseEntity<List<Doctor>> findBySpecialization(@ModelAttribute Doctor doctor) {
     try {

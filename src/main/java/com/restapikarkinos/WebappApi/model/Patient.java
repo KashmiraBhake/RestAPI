@@ -44,8 +44,8 @@ public class Patient {
   // @Pattern(regexp="^[1-9][0-9]{5}$", message="Pincode is invalid")
   private String pincode;
 
-  // @Column(nullable = true, length = 64)
-  // private String photos;
+  @Column(nullable = true, length = 64)
+  private String photos;
   
 
   // @OneToMany(mappedBy= "patients",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -57,14 +57,14 @@ public class Patient {
  
    
 
-  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode) {
+  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
     this.gender = gender;
     this.city = city;
     this.pincode = pincode;
-    // this.photos=photos;
+    this.photos = photos;
     // this.documents = documents;
   }
 
@@ -110,12 +110,12 @@ public class Patient {
   public void setPincode(String pincode) {
     this.pincode = pincode;
   }
-  // public String getPhotos() {
-  //   return photos;
-  // }
-  // public void setPhotos(String photos) {
-  //   this.photos = photos;
-  // }
+  public String getPhotos() {
+    return photos;
+  }
+  public void setPhotos(String photos) {
+    this.photos = photos;
+  }
   // public List<Documents> getDocuments() {
   //   return documents;
   // }
