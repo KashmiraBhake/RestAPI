@@ -34,11 +34,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 //@RequestMapping("/doctor")
 public class DoctorController {
-  private static final String GET_ALL_DOCTORS_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
-  private static final String CREATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
-  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
-  private static final String GET_DOCTOR_BY_ID_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/{id}";
-  private static final String UPDATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors/{id}";  
+  private static final String GET_ALL_DOCTORS_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors";
+  private static final String CREATE_DOCTOR_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors";
+  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
+  private static final String GET_DOCTOR_BY_ID_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/finddoctors/{id}";
+  private static final String UPDATE_DOCTOR_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors/{id}"; 
+  private static final String DELETE_DOCTOR_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors/"; 
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************NEW DOCTOR FORM************************************************* */
@@ -108,6 +109,7 @@ public class DoctorController {
       }
 
       //***************************DOCTORS SPECIALIZATION & CITY************************************************* */
+      
       @RequestMapping(path="/search_doctor",method=RequestMethod.GET)
       private ModelAndView callGetDoctorBySpcAndCtAPI(@RequestParam String specialization,@RequestParam String city) throws JsonMappingException, JsonProcessingException, RestClientException{
         System.out.println("11");
@@ -130,7 +132,8 @@ public class DoctorController {
         return modelAndView;
       }
 
-      //***************************EDIT DOCTOR FORM************************************************* */
+ //*************************************EDIT DOCTOR FORM************************************************* */
+
       @RequestMapping(value = "/edit1/{id}",method=RequestMethod.GET)
       public ModelAndView showEditDoctorPage(@PathVariable(name = "id") String id,@ModelAttribute("doctor") Doctor doctor) throws JsonMappingException, JsonProcessingException, RestClientException {
       
@@ -155,7 +158,8 @@ public class DoctorController {
          
           return modelAndView;
       }
-       //***************************UPDATE DOCTOR************************************************* */
+  // *********************************UPDATE DOCTOR************************************************* */
+
        @RequestMapping(value ="/update1/{id}",method=RequestMethod.POST)
        private ModelAndView callUpdateDoctor(@PathVariable String id, @ModelAttribute Doctor doctor,
        @RequestParam String firstName,
@@ -194,34 +198,13 @@ public class DoctorController {
 
         return modelAndView;
        }
-      //  @RequestMapping(value ="/update1/{id}",method=RequestMethod.POST)
-      //  private @ResponseBody ModelAndView callUpdateDoctor(@PathVariable String id, @ModelAttribute Doctor doctor){
-      //    System.out.println("1");
-      //    System.out.println(doctor.getFirstName());
-      //    System.out.println("2");
-      //    System.out.println(doctor.getLastName());
-      //    System.out.println("3");
-      //   Map<String, String> param = new HashMap<>();
-      //   System.out.println("4");
-      //   param.put("id", id);
-      //   System.out.println("5");
-      //   ModelAndView modelAndView = new ModelAndView();
-      //   System.out.println("6");
-      //   ResponseEntity<Doctor> _doctor= restTemplate.postForEntity(UPDATE_DOCTOR_API,doctor, Doctor.class,param);
-      //   System.out.println("7");
-      //   System.out.println(_doctor.getBody());
-      //   System.out.println("8");
-      //   modelAndView.setViewName("submit_doctor");
-      //   System.out.println("9");
-      //   modelAndView.addObject("firstName", doctor.getFirstName());
 
-      //   modelAndView.addObject("lastName", doctor.getLastName());
-      //   modelAndView.addObject("specialization", doctor.getSpecialization());
-      //   modelAndView.addObject("phoneNumber", doctor.getPhoneNumber());
-      //   modelAndView.addObject("address", doctor.getAddress());
-      //   modelAndView.addObject("city", doctor.getCity());
-      //   modelAndView.addObject("pincode", doctor.getPincode());
-
-      //   return modelAndView;
-      //  }
+//*****************************************************Delete details************************************************ */
+       @RequestMapping(value = "/delete1/{id}", method = RequestMethod.GET)
+        public String deleteDoctorApi(@PathVariable("id") String id) {
+        System.out.println(DELETE_DOCTOR_API+id);
+        restTemplate.delete(DELETE_DOCTOR_API+id);
+        return "redirect:/view_all_doc";       
+    }
+     
 }
