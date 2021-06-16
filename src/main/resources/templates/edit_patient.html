@@ -1,0 +1,46 @@
+
+  
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>Edit Patient</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+        </head>
+        <body>
+        <div class="full-page">
+                <div class=navbar1>
+                        <a href="/">Healthcare<br> WebApp</a>
+                </div>
+                <div id="new-patient"class="login-page">
+                        <div class="form-box1">
+                                <div class="button-box">
+                                        <div id='btn'></div>
+                                        <div type="text" class="txt">Enter details below</div>
+                                </div>
+                                <form id='login'action="#" th:action="@{'/update/' + ${id}}" th:object="${patient}"method="post"class="input-group-login">
+                                        <input type="text" name="id"th:field="*{id}" readonly="readonly" required class="input-field1">
+                                        <input type="text" name="firstName"th:field="*{firstName}" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
+                                        <input type="text" name="lastName"th:field="*{lastName}" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
+                                        <input type="number" name="age"th:field="*{age}" min="0" max="125" required class="input-field1">
+                                        <div class="input-field11">
+                                                <input id="male" name="gender" type="radio" value="Male" th:field="*{gender}" required>
+                                                <label>Male</label>&emsp;  &emsp;  
+                                                <input id="female" name="gender" type="radio" value="Female" th:field="*{gender}" required>
+                                                <label>Female</label>&emsp;  &emsp;  
+                                                <input id="other" name="gender" type="radio" value="Other" th:field="*{gender}" required>
+                                                <label>Other</label>
+                                        </div>
+                                        <input type="text" name="city"th:field="*{city}" pattern="^[A-Za-z]{3,100}$" title="Only alphabets are allowed" required class="input-field1">
+                                        <input type="text" name="pincode"th:field="*{pincode}" pattern="^[1-9][0-9]{5}$" maxlength="6" title="pincode should be exact 6 digit" required class="input-field1">
+                                        <button type ="submit" class="submit-btn">Submit</button>
+                                </form>
+
+
+                        </div>
+                </div>
+        </div>
+        </body>
+
+
+</html>

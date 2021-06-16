@@ -21,18 +21,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-//@RequestMapping("/doctor")
 public class DoctorController {
   private static final String GET_ALL_DOCTORS_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors";
   private static final String CREATE_DOCTOR_API = "https://8080-aquamarine-mackerel-8fls0nd9.ws-us09.gitpod.io/api/doctors";
@@ -109,7 +106,7 @@ public class DoctorController {
       }
 
       //***************************DOCTORS SPECIALIZATION & CITY************************************************* */
-      
+
       @RequestMapping(path="/search_doctor",method=RequestMethod.GET)
       private ModelAndView callGetDoctorBySpcAndCtAPI(@RequestParam String specialization,@RequestParam String city) throws JsonMappingException, JsonProcessingException, RestClientException{
         System.out.println("11");

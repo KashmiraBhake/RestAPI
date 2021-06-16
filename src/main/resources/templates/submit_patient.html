@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>Patient Added</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+        </head>
+        <body>
+              <div class="full-page">
+                      <div class=navbar1>
+                              <a href="/">Healthcare<br> WebApp</a>
+                      </div>
+                      <div id="search-p-result"class="search-p-result-page">
+                              <div class="display-box">
+                                      <div class="button-box">
+                                              <div id='btn'></div>
+                                              <div type="text" class="txt">Please find your details below</div>
+                                      </div>
+                                      <nav1>
+                                        <ul id='DisplayItems'>
+                                            <li th:text="'First Name: ' + ${firstName}"></li>
+                                            <li th:text="'Last Name: ' + ${lastName}"></li>
+                                            <li th:text="'Age: ' + ${age}"></li>
+                                            <li th:text="'Gender: ' + ${gender}"></li>
+                                            <li th:text="'City: ' + ${city}"></li>
+                                            <li th:text="'Pin Code: ' + ${pincode}"></li>
+                                        </ul>
+                                      </nav1>
+                                      <div type="text" class="txt1">Thank You for joining us!!</div>
+                              </div>
+                      </div>
+              </div>
+          </body>
+</html>

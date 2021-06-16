@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>All Patient</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">     
+        </head>
+        <body>
+                <div class="full-page">
+                        <div class=navbar1>
+                                <a href="/">Healthcare<br> WebApp</a>
+                                <div class ="title">
+                                    <h1>All Patients</h1>
+                                </div>
+                        </div>
+                        <div id="all-patient"class="all-p-page">
+                            <div class="all-patient-form">
+                                <table class="styled-table">
+                                    <thead>
+                                    <tr class="active-row">
+                                        <th>Patient ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        <th>City</th>
+                                        <th>Pin Code</th>
+                                        <th>Actions</th>
+                                        <th>Attachments</th>
+                                        <th>View Profile</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="patient : ${patients}" >
+                                            <td th:text="${patient.id}"></td>
+                                            <td th:text="${patient.firstName}"></td>
+                                            <td th:text="${patient.lastName}"></td>
+                                            <td th:text="${patient.age}"></td>
+                                            <td th:text="${patient.gender}"></td>
+                                            <td th:text="${patient.city}"></td>
+                                            <td th:text="${patient.pincode}"></td>
+                                            <td>
+                                                <a th:href="@{'/edit/' + ${patient.id}}"><i class="material-icons">edit</i></a>
+
+                                                <a th:href="@{'/delete/' + ${patient.id}}"><i class="material-icons">delete</i></a>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{'/upload_image/' + ${patient.id}}"><i class="material-icons">insert_photo</i></a>
+                                
+                                                <a th:href="@{'/docs/' + ${patient.id}}"><i class="material-icons">note_add</i></a>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{'/preview/' + ${patient.id}}"><i class="material-icons">person</i></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+            </body>
+    </html>
