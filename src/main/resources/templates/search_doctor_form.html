@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>Search Doctor Form</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+        </head>
+        <body>
+                <div class="full-page">
+                        <div class=navbar1>
+                                <a href="/">Healthcare<br> WebApp</a>
+                        </div>
+                        <div id="search-doctor"class="search-page">
+                                <div class="search-form">
+                                        <div class="search-button-box">
+                                                <div id='search-btn'></div>
+                                                <div type="text" class=txt>Search using specialization & city</div>
+                                        </div>
+                                        <form action="search_doctor" method="get"class="input-group-search">
+                                        <input type="text" name="specialization"placeholder='Specialization' required class="input-field">
+                                        <input type="text" name="city"placeholder='City' required class="input-field">
+                                        <button type="submit"class="submit-btn">Search</button>
+
+                                        </form>
+                                </div>
+                        </div>
+                </div>
+        </body>
+</html>

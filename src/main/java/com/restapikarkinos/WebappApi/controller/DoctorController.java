@@ -1,8 +1,9 @@
 package com.restapikarkinos.WebappApi.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 //import javax.validation.Valid;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.restapikarkinos.WebappApi.model.Doctor;
+
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,11 +27,13 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+
 @Controller
 @RequestMapping("/doctor")
 public class DoctorController {
-  private static final String GET_ALL_DOCTORS_API = "https://8080-emerald-whale-xtd7vopp.ws-us09.gitpod.io/api/doctors";
-  private static final String CREATE_DOCTOR_API = "https://8080-emerald-whale-xtd7vopp.ws-us09.gitpod.io/api/doctors";
+  private static final String GET_ALL_DOCTORS_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
+  private static final String CREATE_DOCTOR_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/doctors";
+  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-copper-cockroach-65w3fq4v.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
 
     static RestTemplate restTemplate = new RestTemplate();
 
@@ -90,6 +94,36 @@ public class DoctorController {
   
         return modelAndView;
      }
+      //***************************SEARCH DOCTOR FORM SPECIALIZATION & CITY************************************************* */
+      @RequestMapping(path="/search_doctor_form",method=RequestMethod.GET)
+      public ModelAndView search_doctor_form() {
+          ModelAndView modelAndView = new ModelAndView();
+          modelAndView.setViewName("search_doctor_form");
+  
+          return modelAndView;
+      }
 
-
+      //***************************DOCTORS SPECIALIZATION & CITY************************************************* */
+      @RequestMapping(path="/search_doctor",method=RequestMethod.GET)
+      private ModelAndView callGetDoctorBySpcAndCtAPI(@RequestParam String specialization,@RequestParam String city) throws JsonMappingException, JsonProcessingException, RestClientException{
+        System.out.println("11");
+        Map<String, String> param = new HashMap<>();
+        System.out.println("22");
+        System.out.println(specialization);
+        param.put("specialization", specialization);
+        System.out.println(param);
+        param.put("city", city);
+        System.out.println("44");
+        System.out.println(param);
+        ModelAndView modelAndView = new ModelAndView();
+        System.out.println("55");
+        ObjectMapper mapper = new ObjectMapper();
+        List<Doctor> doctor = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_DOCTOR_BY_SP_CT_API, String.class,param),Doctor[].class));
+        System.out.println(doctor.get(0).getFirstName());
+        // Doctor doctor = restTemplate.getForObject(GET_DOCTOR_BY_SP_CT_API,Doctor.class,param);
+        // System.out.println(restTemplate.getForObject(GET_DOCTOR_BY_SP_CT_API,Doctor.class,param));
+        modelAndView.setViewName("search_doctor_result");
+        modelAndView.addObject("doctors", doctor);
+        return modelAndView;
+      }
 }
