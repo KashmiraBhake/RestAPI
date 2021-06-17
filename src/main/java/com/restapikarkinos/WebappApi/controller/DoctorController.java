@@ -1,7 +1,9 @@
 package com.restapikarkinos.WebappApi.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -10,6 +12,9 @@ import com.restapikarkinos.WebappApi.model.Doctor;
 import com.restapikarkinos.WebappApi.repository.DoctorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,19 +37,36 @@ public class DoctorController {
   @Autowired
   DoctorRepository doctorRepository;
 
-  @GetMapping("/doctors")
-  public ResponseEntity<List<Doctor>> getAllDoctors() {
-  try {
-      List<Doctor> doctors = new ArrayList<Doctor>();
+  // @GetMapping("/doctors")
+  // public ResponseEntity<List<Doctor>> getAllDoctors() {
+  // try {
+  //     List<Doctor> doctors = new ArrayList<Doctor>();
     
-      doctorRepository.findAll().forEach(doctors::add);
+  //     doctorRepository.findAll().forEach(doctors::add);
       
-      if (doctors.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-      return new ResponseEntity<>(doctors, HttpStatus.OK);
+  //     if (doctors.isEmpty()) {
+  //       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  //     }
+  //     return new ResponseEntity<>(doctors, HttpStatus.OK);
+  //   } catch (Exception e) {
+  //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+  //   }
+  // }
+  @GetMapping("/patients/{page}")
+  public ResponseEntity<Map<String, Object>> getAllDoctors(@PathVariable("page") int page) {
+    try {
+     // List<Patient> pa = new ArrayList<Patient>();
+      Pageable pageable = PageRequest.of(page, 10);
+      Page<Doctor> doctors = doctorRepository.findAll(pageable);
+      Map<String, Object> response = new HashMap<>();
+      response.put("patients", doctors.getContent());
+      response.put("number", doctors.getNumber()+1);
+      response.put("totalPages", doctors.getTotalPages());
+      response.put("currentPage", page);
+      
+      return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

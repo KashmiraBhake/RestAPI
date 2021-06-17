@@ -3,7 +3,9 @@ package com.restapikarkinos.WebappApi.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.io.FileReader;
 
@@ -23,6 +25,7 @@ import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -39,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api")
@@ -66,13 +68,30 @@ public class PatientController {
   //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
   //   }
   // }
-
-  @GetMapping("patients/{page}")
-  public List<Patient> view_all_patient(@PathVariable("page") Integer page) {
+  @GetMapping("/patients/{page}")
+  public ResponseEntity<Map<String, Object>> getAllPatients(@PathVariable("page") int page) {
+    try {
+     // List<Patient> pa = new ArrayList<Patient>();
       Pageable pageable = PageRequest.of(page, 10);
       Page<Patient> patients = patientRepository.findAll(pageable);
-      return patients.toList();
+      Map<String, Object> response = new HashMap<>();
+      response.put("patients", patients.getContent());
+      response.put("number", patients.getNumber()+1);
+      response.put("totalPages", patients.getTotalPages());
+      response.put("currentPage", page);
+      
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
+
+  // @GetMapping("patients/{page}")
+  // public List<Patient> view_all_patient(@PathVariable("page") Integer page) {
+  //     Pageable pageable = PageRequest.of(page, 10);
+  //     Page<Patient> patients = patientRepository.findAll(pageable);
+  //     return patients.toList();
+  // }
 
   @PostMapping("/patients")
   public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
@@ -154,14 +173,12 @@ public class PatientController {
     Optional<Patient> patientData = patientRepository.findById(id);
     Patient _patient = patientData.get();
     _patient.setPhotos(fileName);
-    System.out.println(fileName);
-
-    _patient.setFirstName(_patient.getFirstName());
-    _patient.setLastName(_patient.getLastName());
-    _patient.setAge(_patient.getAge());
-    _patient.setGender(_patient.getGender());
-    _patient.setCity(_patient.getCity());
-    _patient.setPincode(_patient.getPincode());
+    // _patient.setFirstName(_patient.getFirstName());
+    // _patient.setLastName(_patient.getLastName());
+    // _patient.setAge(_patient.getAge());
+    // _patient.setGender(_patient.getGender());
+    // _patient.setCity(_patient.getCity());
+    // _patient.setPincode(_patient.getPincode());
 
     Patient savedPatient = patientRepository.save(_patient);
 
@@ -178,7 +195,7 @@ public class PatientController {
         throw new IOException("Could not save image file: " + fileName, ioe);
     }
   
-    return "Image Uploaded";
+    return fileName;
    }
 
    @PostMapping("/docs/{id}")
@@ -206,8 +223,6 @@ public class PatientController {
             throw new IOException("Could not save file: " + fileName, ioe);
         }
 
-
-            
         return "working";
     }
 
