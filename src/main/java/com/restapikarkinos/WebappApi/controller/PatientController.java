@@ -23,6 +23,8 @@ import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api")
@@ -48,35 +51,28 @@ public class PatientController {
   @Autowired
   DocumentsRepository documentsRepository;
 
-  @GetMapping("/patients")
-  public ResponseEntity<List<Patient>> getAllPatient() {
-  try {
-      List<Patient> patients = new ArrayList<Patient>();
+  // @GetMapping("/patients")
+  // public ResponseEntity<List<Patient>> getAllPatient() {
+  // try {
+  //     List<Patient> patients = new ArrayList<Patient>();
     
-      patientRepository.findAll().forEach(patients::add);
+  //     patientRepository.findAll().forEach(patients::add);
       
-      if (patients.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-      return new ResponseEntity<>(patients, HttpStatus.OK);
-    } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  // @GetMapping("patients/{page}")
-  // public ModelAndView view_all_patient(@PathVariable("page") Integer page) {
-  //     Pageable pageable = PageRequest.of(page, 10);
-  //     ModelAndView modelAndView = new ModelAndView();
-  //     Page<Patient> patients = patientRepository.findAll(pageable);
-  //     modelAndView.setViewName("view_all_patient");
-  //     modelAndView.addObject("patients", patients.getContent());
-  //     modelAndView.addObject("number", patients.getNumber()+1);
-  //     modelAndView.addObject("totalPages", patients.getTotalPages());
-  //     modelAndView.addObject("currentPage" , page);
-  
-  //     return modelAndView;
+  //     if (patients.isEmpty()) {
+  //       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  //     }
+  //     return new ResponseEntity<>(patients, HttpStatus.OK);
+  //   } catch (Exception e) {
+  //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+  //   }
   // }
+
+  @GetMapping("patients/{page}")
+  public List<Patient> view_all_patient(@PathVariable("page") Integer page) {
+      Pageable pageable = PageRequest.of(page, 10);
+      Page<Patient> patients = patientRepository.findAll(pageable);
+      return patients.toList();
+  }
 
   @PostMapping("/patients")
   public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
