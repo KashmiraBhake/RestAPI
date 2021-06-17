@@ -18,7 +18,7 @@
                                                 <div type="text" class=txt>Upload patients' profile picture</div>
                                         </div>
                                         <form action="#" th:action="@{'/photos/add/' + ${id}}"  method="post" enctype="multipart/form-data" class="input-group-search">
-                                            <input type="file" name="image" accept="image/*" required class="input-field">
+                                            <input type="file" name="file"  required class="input-field">
                                             <button type ="submit" value="Upload" class="submit-btn">Submit</button>
                                     </form>
                                 </div>

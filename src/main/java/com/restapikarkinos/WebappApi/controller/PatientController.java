@@ -1,22 +1,30 @@
 package com.restapikarkinos.WebappApi.controller;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-//import java.util.Optional;
-
-//import javax.validation.Valid;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restapikarkinos.WebappApi.model.Patient;
 
-
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +37,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/photos/{id}";
-  private static final String DELETE_PATIENT_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/patients/";
+  private static final String GET_ALL_PATIENTS_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/patients/";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -224,28 +232,89 @@ public class PatientController {
     }
 
     //***************************UPLOAD PATIENT PHOTO ****************************************************** */
+    public static File convert(MultipartFile file)
+  {    
+    File convFile = new File("temp_image", file.getOriginalFilename());
+    if (!convFile.getParentFile().exists()) {
+            System.out.println("mkdir:" + convFile.getParentFile().mkdirs());
+    }
+    try {
+        convFile.createNewFile();
+          FileOutputStream fos = new FileOutputStream(convFile); 
+            fos.write(file.getBytes());
+            fos.close(); 
+    } catch (IOException e) {
+        e.printStackTrace();
+    } 
+    return convFile;
+ }
+ public static Resource getTestFile() throws IOException {
+  Path testFile = Files.createTempFile("test-file", ".txt");
+  System.out.println("Creating and Uploading Test File: " + testFile);
+  Files.write(testFile, "Hello World !!, This is a test file.".getBytes());
+  return new FileSystemResource(testFile.toFile());
+}
 
     @RequestMapping(path="/photos/add/{id}",method=RequestMethod.POST)
-    public ModelAndView savePatientpic(@ModelAttribute Patient patient,
-    @RequestParam("image") MultipartFile multipartFile, 
-    @PathVariable Long id){
-      System.out.println("in add image----------->");
-      Map<String, Long> param = new HashMap<>();
-      param.put("id", id);
-      System.out.println("id is ------>"+id);
-      Patient patient1 = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
-      System.out.println(patient1.getFirstName());
-      System.out.println("photo is----------->");
-      System.out.println(patient1.getPhotos());
+    public ModelAndView savePatientpic(@ModelAttribute Patient patient, @RequestParam("file") MultipartFile file, 
+    @PathVariable Long id) throws IOException{
+      System.out.println("in add image----------->"); 
+      // Map<String, Long> param = new HashMap<>();
+      // param.put("id", id);
+      // System.out.println("id is ------>"+id);
+      System.out.println(file.getSize());
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+      
+      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+      
+   // body.add("file", new FileSystemResource(convert(file)));
+   body.add("file", getTestFile());
+   
+    System.out.println(file.getOriginalFilename());
+    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+    System.out.println("%----------->");
+    System.out.println(requestEntity.hasBody());
+    System.out.println(requestEntity.getBody());
+
+      // ObjectMapper newObjectMapper = new ObjectMapper(); 
+      // newObjectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
+      restTemplate.exchange(UPDATE_PATIENT_IMG_API+id,HttpMethod.POST, requestEntity, String.class);
+      System.out.println("%----------->>>>>>>");
+      //System.out.println(response.getStatusCode());
+
       ModelAndView modelAndView = new ModelAndView();
-      System.out.println("**********"+multipartFile.getOriginalFilename());
-      Patient _patient = new Patient(patient1.getFirstName(),patient1.getLastName(),patient1.getAge(),patient1.getGender(),patient1.getCity(),patient1.getPincode(),multipartFile.getOriginalFilename());
-      System.out.println("%----------->");
-        restTemplate.put(UPDATE_PATIENT_IMG_API,_patient, param);
 
       modelAndView.setViewName("image_upload_message");
-       return modelAndView;
+      return modelAndView;
     }
+
+
+    // @RequestMapping(path="/photos/add/{id}",method=RequestMethod.POST)
+    // public ModelAndView savePatientpic(@ModelAttribute Patient patient,
+    // @RequestParam("image") MultipartFile multipartFile, 
+    // @PathVariable Long id){
+    //   System.out.println("in add image----------->");
+    //   Map<String, Long> param = new HashMap<>();
+    //   param.put("id", id);
+    //   System.out.println("id is ------>"+id);
+    //   Patient patient1 = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
+    //   System.out.println(patient1.getFirstName());
+    //   System.out.println("photo is----------->");
+    //   System.out.println(patient1.getPhotos());
+    //   ModelAndView modelAndView = new ModelAndView();
+    //   System.out.println("**********"+multipartFile.getOriginalFilename());
+    //   Patient _patient = new Patient(patient1.getFirstName(),patient1.getLastName(),patient1.getAge(),patient1.getGender(),patient1.getCity(),patient1.getPincode(),multipartFile.getOriginalFilename());
+    //   System.out.println("%----------->");
+    //   System.out.println(_patient.getFirstName());
+    //   System.out.println(_patient.getPhotos());
+    //   ResponseEntity<Patient> patient2= restTemplate.postForEntity(UPDATE_PATIENT_IMG_API,patient, Patient.class,_patient, param);
+    //   System.out.println(patient2.getBody());
+    //     //restTemplate.postForEntity(UPDATE_PATIENT_IMG_API,_patient, param);
+
+    //   modelAndView.setViewName("image_upload_message");
+    //    return modelAndView;
+    // }
 
 
 }
