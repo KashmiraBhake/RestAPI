@@ -62,7 +62,7 @@ public class Patient {
  
    
 
-  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos,List<Documents> documents) {
+  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
@@ -70,7 +70,7 @@ public class Patient {
     this.city = city;
     this.pincode = pincode;
     this.photos = photos;
-    this.documents = documents;
+    // this.documents = documents;
   }
 
   public Long getId() {

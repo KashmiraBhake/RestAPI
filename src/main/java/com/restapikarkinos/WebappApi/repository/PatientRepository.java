@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     List<Patient> findByFirstName(String firstName);
     List<Patient> findAll();
-    Optional<Patient> findById(String id);
+    Optional<Patient> findById(Long id);
 }

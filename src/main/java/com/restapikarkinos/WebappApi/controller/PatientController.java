@@ -64,6 +64,20 @@ public class PatientController {
     }
   }
 
+  // @GetMapping("patients/{page}")
+  // public ModelAndView view_all_patient(@PathVariable("page") Integer page) {
+  //     Pageable pageable = PageRequest.of(page, 10);
+  //     ModelAndView modelAndView = new ModelAndView();
+  //     Page<Patient> patients = patientRepository.findAll(pageable);
+  //     modelAndView.setViewName("view_all_patient");
+  //     modelAndView.addObject("patients", patients.getContent());
+  //     modelAndView.addObject("number", patients.getNumber()+1);
+  //     modelAndView.addObject("totalPages", patients.getTotalPages());
+  //     modelAndView.addObject("currentPage" , page);
+  
+  //     return modelAndView;
+  // }
+
   @PostMapping("/patients")
   public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
   try {
@@ -132,15 +146,15 @@ public class PatientController {
   }
 
   @PostMapping("/photos/{id}")
-  public ResponseEntity<String> savePatientpic(@RequestParam("image") MultipartFile multipartFile, 
+  public String savePatientpic(@RequestParam("image") MultipartFile multipartFile, 
   @PathVariable(name = "id") Long id)
   throws IOException {
   
     System.out.println(id);
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-    if(multipartFile.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Request must contain file");
-    }
+    // if(multipartFile.isEmpty()) {
+    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Request must contain file");
+    // }
     Optional<Patient> patientData = patientRepository.findById(id);
     Patient _patient = patientData.get();
     _patient.setPhotos(fileName);
@@ -168,11 +182,11 @@ public class PatientController {
         throw new IOException("Could not save image file: " + fileName, ioe);
     }
   
-    return ResponseEntity.ok("working");
+    return "Image Uploaded";
    }
 
    @PostMapping("/docs/{id}")
-    public ResponseEntity <String> savedoc(@RequestParam("document") MultipartFile multipartFile,
+    public String savedoc(@RequestParam("document") MultipartFile multipartFile,
     @PathVariable (name = "id") Patient id) 
     throws IOException{
     
@@ -198,7 +212,7 @@ public class PatientController {
 
 
             
-        return ResponseEntity.ok("working");
+        return "working";
     }
 
     @RequestMapping("/upload")
