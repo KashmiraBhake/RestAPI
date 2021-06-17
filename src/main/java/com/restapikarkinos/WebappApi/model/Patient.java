@@ -26,27 +26,27 @@ public class Patient {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank
-  @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$" , message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
+  // @NotBlank
+  // @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$" , message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
   private String firstName;
 
-  @NotBlank
-  @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$" , message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
+  // @NotBlank
+  // @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$" , message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
   private String lastName;
 
-  @NotNull @Min(0) @Max(125)
+  // @NotNull @Min(0) @Max(125)
   private String age;
 
-  @NotBlank
-  @Pattern(regexp = "^(?:Male|Female|Other)$", message = "Gender should be in Male, Female or Other pattern only")
+  // @NotBlank
+  // @Pattern(regexp = "^(?:Male|Female|Other)$", message = "Gender should be in Male, Female or Other pattern only")
   private String gender;
 
-  @NotBlank
-  @Pattern(regexp = "^[A-Za-z]{3,100}$", message = "Please enter between {min} and {max}")
+  // @NotBlank
+  // @Pattern(regexp = "^[A-Za-z]{3,100}$", message = "Please enter between {min} and {max}")
   private String city;
 
-  @NotBlank
-  @Pattern(regexp="^[1-9][0-9]{5}$", message="Pincode is invalid")
+  // @NotBlank
+  // @Pattern(regexp="^[1-9][0-9]{5}$", message="Pincode is invalid")
   private String pincode;
 
   @Column(nullable = true, length = 64)

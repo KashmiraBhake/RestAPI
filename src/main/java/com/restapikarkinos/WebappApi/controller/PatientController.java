@@ -1,9 +1,12 @@
 package com.restapikarkinos.WebappApi.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.io.FileReader;
+
 
 import javax.validation.Valid;
 
@@ -13,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import com.google.gson.Gson;
 import com.restapikarkinos.WebappApi.model.Documents;
 import com.restapikarkinos.WebappApi.model.Patient;
 import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
@@ -195,6 +199,21 @@ public class PatientController {
 
             
         return ResponseEntity.ok("working");
+    }
+
+    @RequestMapping("/upload")
+    public void upload() throws IOException {
+        FileReader reader = new FileReader("/workspace/RestAPI/src/main/resources/Patient.json");
+        BufferedReader br = new BufferedReader(reader);
+        StringBuffer sbr = new StringBuffer();
+        String line;
+        
+        while((line = br.readLine()) != null){
+          Gson gson = new Gson();
+          Patient patient = gson.fromJson(line, Patient.class);
+          patientRepository.save(patient);
+
+        }
     }
 
 }

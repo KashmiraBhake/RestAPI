@@ -33,7 +33,7 @@ public class DoctorController {
   DoctorRepository doctorRepository;
 
   @GetMapping("/doctors")
-  public ResponseEntity<List<Doctor>> getAllTutorials() {
+  public ResponseEntity<List<Doctor>> getAllDoctors() {
   try {
       List<Doctor> doctors = new ArrayList<Doctor>();
     
