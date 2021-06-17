@@ -1,6 +1,5 @@
 package com.restapikarkinos.WebappApi.model;
 
-import java.util.List;
 
 public class Patient {
 
@@ -21,13 +20,12 @@ public class Patient {
 
   private String photos;
 
-  private List<Documents> documents;
 
   protected Patient() {
 
   }
     
-  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos, List<Documents> documents) {
+  public Patient(String firstName, String lastName, String age, String gender, String city, String pincode, String photos) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
@@ -35,7 +33,7 @@ public class Patient {
     this.city = city;
     this.pincode = pincode;
     this.photos = photos;
-    this.documents = documents;
+  
   }
 
   public Long getId() {
@@ -85,11 +83,5 @@ public class Patient {
   }
   public void setPhotos(String photos) {
     this.photos = photos;
-  }
-  public List<Documents> getDocuments() {
-    return documents;
-  }
-  public void setDocuments(List<Documents> documents) {
-    this.documents = documents;
   }
 }

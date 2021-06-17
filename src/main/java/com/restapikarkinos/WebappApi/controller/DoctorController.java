@@ -34,11 +34,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 //@RequestMapping("/doctor")
 public class DoctorController {
-  private static final String GET_ALL_DOCTORS_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/doctors";
-  private static final String CREATE_DOCTOR_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/doctors";
-  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
-  private static final String GET_DOCTOR_BY_ID_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/finddoctors/{id}";
-  private static final String UPDATE_DOCTOR_API = "https://8080-jade-hawk-96xoo4at.ws-us09.gitpod.io/api/doctors/{id}";  
+  private static final String GET_ALL_DOCTORS_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/doctors";
+  private static final String CREATE_DOCTOR_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/doctors";
+  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
+  private static final String GET_DOCTOR_BY_ID_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/finddoctors/{id}";
+  private static final String UPDATE_DOCTOR_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/doctors/{id}";  
+  private static final String DELETE_DOCTOR_API = "https://8080-amethyst-termite-q7sjm6yq.ws-us08.gitpod.io/api/doctors/";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************NEW DOCTOR FORM************************************************* */
@@ -194,4 +195,13 @@ public class DoctorController {
 
         return modelAndView;
        }
+       //***************************DELETE DOCTOR************************************************* */
+       @RequestMapping(value = "/delete1/{id}", method = RequestMethod.GET)
+    public String deleteDoctorApi(@PathVariable("id") String id) {
+      System.out.println(DELETE_DOCTOR_API+id);
+        restTemplate.delete(DELETE_DOCTOR_API+id);
+      
+        return "redirect:/";       
+    }
+
 }
