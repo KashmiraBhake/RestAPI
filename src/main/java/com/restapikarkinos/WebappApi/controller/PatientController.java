@@ -37,13 +37,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-emerald-basilisk-f34pv4n2.ws-us08.gitpod.io/api/patients/";
+  private static final String GET_ALL_PATIENTS_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/patients/";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -75,7 +75,7 @@ public class PatientController {
         @RequestParam String city,
         @RequestParam String pincode){
 
-         //Patient _patient =new Patient(firstName,lastName,specialization,phoneNumber,address,city,pincode);
+    
           ResponseEntity<Patient> patient2= restTemplate.postForEntity(CREATE_PATIENT_API,patient, Patient.class);
           System.out.println(patient2.getBody());
           ModelAndView modelAndView = new ModelAndView();
@@ -120,14 +120,12 @@ public class PatientController {
     //***************************PATIENTS FIRST NAME********************************************************************* */
     @RequestMapping(path="/search_patient",method=RequestMethod.GET)
     private ModelAndView callGetPatientByFirstName(@RequestParam String firstName) throws JsonMappingException, JsonProcessingException, RestClientException{
-      System.out.println("11");
+   
       Map<String, String> param = new HashMap<>();
-      System.out.println("22");
-      System.out.println(firstName);
       param.put("firstName", firstName);
-      System.out.println(param);
+     
       ModelAndView modelAndView = new ModelAndView();
-      System.out.println("55");
+  
       ObjectMapper mapper = new ObjectMapper();
       List<Patient> patient = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_PATIENT_BY_FNAME_API, String.class,param),Patient[].class));
       System.out.println(patient.get(0).getFirstName());
@@ -169,27 +167,18 @@ public class PatientController {
         @RequestParam String gender,
         @RequestParam String city,
         @RequestParam String pincode){
-        System.out.println("1");
        
-        System.out.println(firstName);
-        System.out.println("2");
-        System.out.println(lastName);
-        System.out.println("3");
+       
        Map<String, Long> param = new HashMap<>();
-       System.out.println("4");
        param.put("id", id);
-       System.out.println("5");
+
        ModelAndView modelAndView = new ModelAndView();
-       System.out.println("6");
-       //Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode);
       Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode,patient.getPhotos());
         restTemplate.put(UPDATE_PATIENT_API,_patient,param);
      
-       System.out.println("8");
+  
        modelAndView.setViewName("submit_patient");
-       System.out.println("9");
        modelAndView.addObject("firstName", firstName);
-
        modelAndView.addObject("lastName", lastName);
        modelAndView.addObject("age", age);
        modelAndView.addObject("gender", gender);
@@ -210,111 +199,36 @@ public class PatientController {
 
       @RequestMapping(path="/upload_image/{id}",method = RequestMethod.GET)
     public ModelAndView showupload_pic_page(@PathVariable(name = "id") Long id,@ModelAttribute Patient patient) {
-      System.out.println("in upload image----------->");
       Map<String, Long> param = new HashMap<>();
       param.put("id", id);
-      System.out.println("id is ------>"+id);
       Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
-      System.out.println("fist name is----------->");
-      System.out.println(result.getFirstName());
-      System.out.println(result.getLastName());
-      System.out.println(result.getAge());
-      System.out.println(result.getGender());
-      System.out.println("photo is----------->");
-      System.out.println(result.getPhotos());
+   
 
     ModelAndView modelAndView = new ModelAndView();
     modelAndView.setViewName("upload_image");
     modelAndView.addObject("patient", result);
-    System.out.println("result -------->"+result.getLastName());
     modelAndView.addObject("id", id);
     return modelAndView;
     }
 
     //***************************UPLOAD PATIENT PHOTO ****************************************************** */
-    public static File convert(MultipartFile file)
-  {    
-    File convFile = new File("temp_image", file.getOriginalFilename());
-    if (!convFile.getParentFile().exists()) {
-            System.out.println("mkdir:" + convFile.getParentFile().mkdirs());
-    }
-    try {
-        convFile.createNewFile();
-          FileOutputStream fos = new FileOutputStream(convFile); 
-            fos.write(file.getBytes());
-            fos.close(); 
-    } catch (IOException e) {
-        e.printStackTrace();
-    } 
-    return convFile;
- }
- public static Resource getTestFile() throws IOException {
-  Path testFile = Files.createTempFile("test-file", ".txt");
-  System.out.println("Creating and Uploading Test File: " + testFile);
-  Files.write(testFile, "Hello World !!, This is a test file.".getBytes());
-  return new FileSystemResource(testFile.toFile());
-}
 
     @RequestMapping(path="/photos/add/{id}",method=RequestMethod.POST)
     public ModelAndView savePatientpic(@ModelAttribute Patient patient, @RequestParam("file") MultipartFile file, 
     @PathVariable Long id) throws IOException{
-      System.out.println("in add image----------->"); 
-      // Map<String, Long> param = new HashMap<>();
-      // param.put("id", id);
-      // System.out.println("id is ------>"+id);
-      System.out.println(file.getSize());
-      HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-      
-      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-      
-   // body.add("file", new FileSystemResource(convert(file)));
-   body.add("file", getTestFile());
-   
-    System.out.println(file.getOriginalFilename());
-    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    System.out.println("%----------->");
-    System.out.println(requestEntity.hasBody());
-    System.out.println(requestEntity.getBody());
 
-      // ObjectMapper newObjectMapper = new ObjectMapper(); 
-      // newObjectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
-      restTemplate.exchange(UPDATE_PATIENT_IMG_API+id,HttpMethod.POST, requestEntity, String.class);
-      System.out.println("%----------->>>>>>>");
-      //System.out.println(response.getStatusCode());
+    Resource filebody = file.getResource();
+    LinkedMultiValueMap<String, Object> fullfile = new LinkedMultiValueMap<>();
+    fullfile.add("file", filebody);
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+    HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(fullfile, httpHeaders);
+    ResponseEntity<String>  resp = restTemplate.postForEntity(UPDATE_PATIENT_IMG_API+id, httpEntity, String.class);
+    System.out.println(resp.getBody());
 
       ModelAndView modelAndView = new ModelAndView();
-
       modelAndView.setViewName("image_upload_message");
       return modelAndView;
     }
-
-
-    // @RequestMapping(path="/photos/add/{id}",method=RequestMethod.POST)
-    // public ModelAndView savePatientpic(@ModelAttribute Patient patient,
-    // @RequestParam("image") MultipartFile multipartFile, 
-    // @PathVariable Long id){
-    //   System.out.println("in add image----------->");
-    //   Map<String, Long> param = new HashMap<>();
-    //   param.put("id", id);
-    //   System.out.println("id is ------>"+id);
-    //   Patient patient1 = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
-    //   System.out.println(patient1.getFirstName());
-    //   System.out.println("photo is----------->");
-    //   System.out.println(patient1.getPhotos());
-    //   ModelAndView modelAndView = new ModelAndView();
-    //   System.out.println("**********"+multipartFile.getOriginalFilename());
-    //   Patient _patient = new Patient(patient1.getFirstName(),patient1.getLastName(),patient1.getAge(),patient1.getGender(),patient1.getCity(),patient1.getPincode(),multipartFile.getOriginalFilename());
-    //   System.out.println("%----------->");
-    //   System.out.println(_patient.getFirstName());
-    //   System.out.println(_patient.getPhotos());
-    //   ResponseEntity<Patient> patient2= restTemplate.postForEntity(UPDATE_PATIENT_IMG_API,patient, Patient.class,_patient, param);
-    //   System.out.println(patient2.getBody());
-    //     //restTemplate.postForEntity(UPDATE_PATIENT_IMG_API,_patient, param);
-
-    //   modelAndView.setViewName("image_upload_message");
-    //    return modelAndView;
-    // }
-
 
 }
