@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "https://kumquat-narwhal-6msaatvi.ws-us09.gitpod.io")
 @RestController
-//@EnableAutoConfiguration
 @RequestMapping("/api")
 public class DoctorController {
     
@@ -52,7 +50,7 @@ public class DoctorController {
   //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
   //   }
   // }
-  @GetMapping("/patients/{page}")
+  @GetMapping("/doctors/{page}")
   public ResponseEntity<Map<String, Object>> getAllDoctors(@PathVariable("page") int page) {
     try {
      // List<Patient> pa = new ArrayList<Patient>();

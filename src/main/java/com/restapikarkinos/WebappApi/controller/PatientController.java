@@ -1,6 +1,9 @@
 package com.restapikarkinos.WebappApi.controller;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.io.FileReader;
 
-
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import java.io.InputStream;
@@ -20,8 +24,10 @@ import java.nio.file.StandardCopyOption;
 
 import com.google.gson.Gson;
 import com.restapikarkinos.WebappApi.model.Documents;
+import com.restapikarkinos.WebappApi.model.NewPatient;
 import com.restapikarkinos.WebappApi.model.Patient;
 import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
+import com.restapikarkinos.WebappApi.repository.NewPatientRepository;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +58,9 @@ public class PatientController {
 
   @Autowired
   DocumentsRepository documentsRepository;
+
+  @Autowired
+  NewPatientRepository newPatientRepository;
 
   // @GetMapping("/patients")
   // public ResponseEntity<List<Patient>> getAllPatient() {
@@ -226,6 +235,34 @@ public class PatientController {
         return "working";
     }
 
+    @GetMapping("/docs/{id}/{doc}")
+    public void downloadDoc(HttpServletResponse response,@PathVariable Patient id,@PathVariable String doc,@ModelAttribute("patient") Patient patient) 
+    throws Exception{
+              List<Documents> result = documentsRepository.findByPatients(id);
+        Documents documents = result.get(0);
+       
+        File file = new File("/workspace/RestAPI/." + documents.getDocsFilePath() + doc);
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=" + doc;
+
+        response.setHeader(headerKey,headerValue);
+        ServletOutputStream outputStream = response.getOutputStream();
+        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+        byte[] buffer = new byte[8192];
+        int bytesRead = -1;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1){
+            outputStream.write(buffer, 0, bytesRead);
+        }
+   
+        inputStream.close();
+        outputStream.close();
+        System.out.println("******************************************************");
+    }
+
+
     @RequestMapping("/upload")
     public void upload() throws IOException {
         FileReader reader = new FileReader("/workspace/RestAPI/src/main/resources/Patient.json");
@@ -240,5 +277,16 @@ public class PatientController {
 
         }
     }
+
+    @PostMapping("/new-patients")
+  public ResponseEntity<NewPatient> createNewPatient(@Valid @RequestBody NewPatient patient) {
+  try {
+      System.out.println("hello");
+      NewPatient _patient = newPatientRepository.save(patient);
+      return new ResponseEntity<>(_patient, HttpStatus.CREATED);
+    } catch (Exception e) {
+        return new ResponseEntity<>(patient, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
 }
