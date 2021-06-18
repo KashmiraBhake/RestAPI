@@ -1,9 +1,6 @@
 package com.restapikarkinos.WebappApi.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -13,11 +10,9 @@ import com.restapikarkinos.WebappApi.repository.DoctorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,28 +45,16 @@ public class DoctorController {
   //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
   //   }
   // }
-  @GetMapping("/doctors/{page}")
-  public ResponseEntity<Map<String, Object>> getAllDoctors(@PathVariable("page") int page) {
-    try {
-     // List<Patient> pa = new ArrayList<Patient>();
-      Pageable pageable = PageRequest.of(page, 10);
+
+  @GetMapping("/doctors")
+  public Page<Doctor> getAllDoctors( Pageable pageable) {
       Page<Doctor> doctors = doctorRepository.findAll(pageable);
-      Map<String, Object> response = new HashMap<>();
-      response.put("patients", doctors.getContent());
-      response.put("number", doctors.getNumber()+1);
-      response.put("totalPages", doctors.getTotalPages());
-      response.put("currentPage", page);
-      
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+      return doctors;
   }
 
   @PostMapping("/doctors")
   public ResponseEntity<Doctor> createDoctor(@Valid @RequestBody Doctor doctor) {
   try {
-      System.out.println("hello");
       Doctor _doctor = doctorRepository.save(doctor);
       return new ResponseEntity<>(_doctor, HttpStatus.CREATED);
     } catch (Exception e) {
@@ -98,13 +81,13 @@ public class DoctorController {
     try {
         List<Doctor> doctors = doctorRepository.findBySpecializationAndCity(doctor.getSpecialization(), doctor.getCity());
     
-        if (doctors.isEmpty()) {
+      if (doctors.isEmpty()) {
           return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(doctors, HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
       }
+      return new ResponseEntity<>(doctors, HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @PutMapping("/doctors/{id}")
@@ -131,9 +114,9 @@ public class DoctorController {
     try {
         doctorRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } catch (Exception e) {
+    } catch (Exception e) {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+    }
   }
 
 }
