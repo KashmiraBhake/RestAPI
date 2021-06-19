@@ -9,6 +9,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restapikarkinos.WebappApi.model.Documents;
 import com.restapikarkinos.WebappApi.model.Patient;
 
 
@@ -31,13 +32,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-bronze-beaver-3az3tiru.ws-us09.gitpod.io/api/patients/";
+  private static final String GET_ALL_PATIENTS_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/documents/{id}";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -224,5 +227,56 @@ public class PatientController {
       modelAndView.setViewName("image_upload_message");
       return modelAndView;
     }
+
+    //***************************UPLOAD PATIENT DOCUMENT FORM************************************************* */
+
+    @RequestMapping(path="/upload_document/{id}",method = RequestMethod.GET)
+    public ModelAndView showupload_pdoc_page(@PathVariable(name = "id") Long id) {
+      Map<String, Long> param = new HashMap<>();
+      param.put("id", id);
+      System.out.println(id);
+      Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
+   
+      System.out.println(result.getFirstName());
+    ModelAndView modelAndView = new ModelAndView();
+    modelAndView.setViewName("upload_document");
+    modelAndView.addObject("patient", result);
+    modelAndView.addObject("id", id);
+    return modelAndView;
+    }
+    //***************************UPLOAD PATIENT DOCUMENT ****************************************************** */
+
+    @RequestMapping(path="/docs/add/{id}",method=RequestMethod.POST)
+    public ModelAndView savePatientdoc(@ModelAttribute Documents documents,
+    @RequestParam("document") MultipartFile multipartFile,
+    @PathVariable ("id") Long id) throws IOException{
+      Map<String, Long> param = new HashMap<>();
+      param.put("id", id);
+      System.out.println(param);
+      ResponseEntity<Documents> result = restTemplate.getForEntity(GET_DOCUMENT_BY_ID_API,Documents.class,param);
+      System.out.println(result.getBody());
+      Resource filebody = multipartFile.getResource();
+      LinkedMultiValueMap<String, Object> fullfile = new LinkedMultiValueMap<>();
+      fullfile.add("document", filebody);
+      HttpHeaders httpHeaders = new HttpHeaders();
+      httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+      HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(fullfile, httpHeaders);
+      ResponseEntity<String>  resp = restTemplate.postForEntity(UPDATE_PATIENT_DOC_API+id, httpEntity, String.class);
+  
+    System.out.println(resp.getBody());
+  
+
+      ModelAndView modelAndView = new ModelAndView();
+      modelAndView.setViewName("document_upload_message");
+      return modelAndView;
+    }
+
+  //***************************DOWNLOAD DOCUMENTS************************************************* */
+
+  //***************************CHECK IF DOCUMENTS ARE PRESENT OR NOT************************************************* */
+
+  //***************************VIEW WITH DOCUMENTS************************************************* */
+
+  //***************************VIEW WITHOUT DOCUMENTS************************************************* */
 
 }

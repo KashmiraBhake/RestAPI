@@ -41,18 +41,4 @@ public Patient getPatients() {
 public void setPatients(Patient patients) {
   this.patients = patients;
 }
-    
-public Object getId() {
-        return null;
-    }
-
-
-    public String getId(Patient id) {
-        return null;
-    }
-
-
-    public String getByPatients(Patient id) {
-        return null;
-    }
 }
