@@ -48,7 +48,7 @@
                                             <td>
                                                 <a th:href="@{'/upload_image/' + ${patient.id}}"><i class="material-icons">insert_photo</i></a>
                                 
-                                                <a th:href="@{'/upload_document/' + ${patient.id}}"><i class="material-icons">note_add</i></a>
+                                                <a th:href="@{'/docs/' + ${patient.id}}"><i class="material-icons">note_add</i></a>
                                             </td>
                                             <td>
                                                 <a th:href="@{'/preview/' + ${patient.id}}"><i class="material-icons">person</i></a>
@@ -56,6 +56,50 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                    <div class="pg">
+                                        <nav aria-label="Page navigation example">
+                                            <ul>
+                                                <li class="page-item" th:classappend="${number eq totalPages-1} ? 'disabled'">
+                                                    <a class="page-link svg-icon"
+                                                        th:if="${currentPage >= 1}"  th:href="@{1}">First</a>
+                                                        <span th:unless= "${currentPage >= 1}" >First</span>
+                                                </li>
+                                                 <li class="page-item" th:classappend="${number eq 1} ? 'disabled'">
+                                                    <a class="page-link svg-icon"
+                                                        th:if="${currentPage > 1}" th:href="@{${currentPage}-1 }">&laquo;</a>
+                                                        <span th:unless= "${currentPage >= 1}" >&laquo;</span>    
+                                                    </a>
+                                                </li>
+                                            
+                                            
+                                                 <li class="page-item" th:classappend="${i eq number} ? 'active'"
+                                                    th:each="i : ${#numbers.sequence( number, totalPages > 5 + number ? number + 5 : totalPages, 1)}">
+                                                    <a class="page-link" th:href="@{${i} }" th:text="${i}"
+                                                       th:title="${'Page '+ i}"
+                                                       rel="tooltip"></a>
+                                                </li>
+                                                
+                                                <li class="page-item disabled" th:if="${number + 5 < totalPages}">
+                                                    <a class="page-link svg-icon" href="#">
+                                                        <span data-feather="more-horizontal" width="20" height="20"></span>
+                                                        <span aria-hidden="true">...</span>
+                                                    </a>
+                                                </li>
+                                            
+                                                <li class="page-item" th:classappend="${number eq totalPages} ? 'disabled'">
+                                                    <a class="page-link svg-icon"
+                                                    th:if="${currentPage < totalPages-1}" th:href="@{${currentPage}+1  }">&raquo;</a>
+                                                    <span th:unless= "${currentPage < totalPages}" >&raquo;</span>
+                                                </li>
+                                            
+                                                <li class="page-item" th:classappend="${number eq totalPages} ? 'disabled'">
+                                                    <a class="page-link svg-icon"
+                                                      th:if="${currentPage < totalPages}" th:href="@{${totalPages}}">Last</a>
+                                                    <span th:unless= "${currentPage <= totalPages}" >Last</span>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                        </div>
                                 </div>
                             </div>
                     </div>

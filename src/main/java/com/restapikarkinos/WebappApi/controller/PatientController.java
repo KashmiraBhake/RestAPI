@@ -9,13 +9,15 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restapikarkinos.WebappApi.PaginatedResponse;
 import com.restapikarkinos.WebappApi.model.Documents;
 import com.restapikarkinos.WebappApi.model.Patient;
 
-
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,8 @@ public class PatientController {
   private static final String UPDATE_PATIENT_DOC_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/docs/";
   private static final String GET_DOCUMENT_BY_ID_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/documents/{id}";
   private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/document/patient/{id}";
+  private static final String PAGINATION_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients/";
+  
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -106,6 +110,31 @@ public class PatientController {
        modelAndView.addObject("patients", result);
  
        return modelAndView;
+    }
+
+
+
+    @RequestMapping(path = "/view_all_patient/{page}", method = RequestMethod.GET)
+    public ModelAndView viewAllPatientapi(@PathVariable("page") Integer page) {
+      System.out.println("***********************************************");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        System.out.println("***********************************************");
+        //ObjectMapper mapper = new ObjectMapper();
+        ParameterizedTypeReference<PaginatedResponse<Patient>> responseType = new ParameterizedTypeReference<PaginatedResponse<Patient>>() { };
+        ResponseEntity<PaginatedResponse<Patient>> result = restTemplate.exchange(PAGINATION_PATIENT_API+ "?page="+(page-1)+"&size=10", HttpMethod.GET, null, responseType);
+        System.out.println(result.getBody());
+        List<Patient> patients = result.getBody().getContent();
+        System.out.println("1111111111111111111111111111111111111111111111111111111111111111111");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("view_all_patient");
+        modelAndView.addObject("patients", patients);
+        System.out.println("---------------------------------------------");
+        modelAndView.addObject("number", result.getBody().getNumber()+1);
+        modelAndView.addObject("totalPages", result.getBody().getTotalPages());
+        modelAndView.addObject("currentPage" , page);
+    
+        return modelAndView;
     }
     //***************************SEARCH PATIENT FORM FIRST NAME*********************************************************** */
     @RequestMapping(path="/search_patient_form",method=RequestMethod.GET)
@@ -309,7 +338,8 @@ public class PatientController {
         
             modelAndView.setViewName("patient_details");
             modelAndView.addObject("patient",result);
-            modelAndView.addObject("PhotosImagePath",result.getPhotosImagePath());
+          //  modelAndView.addObject("PhotosImagePath",result.getPhotosImagePath());
+            modelAndView.addObject("photos",result.getPhotos());
             modelAndView.addObject("firstName", result.getFirstName());
             modelAndView.addObject("lastName", result.getLastName());
             modelAndView.addObject("age", result.getAge());
