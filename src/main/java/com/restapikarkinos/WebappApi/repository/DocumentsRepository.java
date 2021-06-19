@@ -1,6 +1,7 @@
 package com.restapikarkinos.WebappApi.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.restapikarkinos.WebappApi.model.Documents;
 import com.restapikarkinos.WebappApi.model.Patient;
@@ -12,6 +13,8 @@ public interface DocumentsRepository extends JpaRepository<Documents, Long> {
     List<Documents> findByPatients(Patient patient_id);
  
  Documents findByDocId(Long id);
+
+Optional<Documents> findByDocId(Object id);
    
  
  

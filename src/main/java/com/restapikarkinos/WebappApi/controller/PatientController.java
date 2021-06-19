@@ -200,6 +200,20 @@ public class PatientController {
 
   }
 
+  @GetMapping("/documents/{id}")
+  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents,@PathVariable("id") String id) {
+    try {
+        Optional<Documents> documentsData = documentsRepository.findByDocId(documents.getId());
+      if (documentsData.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      Documents _documents = documentsData.get();
+      return new ResponseEntity<>(documentsRepository.save(_documents), HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @GetMapping("/docs/{id}/{doc}")
   public void downloadDoc(HttpServletResponse response,@PathVariable Patient id,
   @PathVariable String doc,@ModelAttribute("patient") Patient patient) 
