@@ -101,7 +101,7 @@ public class PatientController {
   }
 
   @GetMapping("/findpatients/{id}")
-  public ResponseEntity<Patient> findById(@ModelAttribute Patient patient,@PathVariable("id") String id) {
+  public ResponseEntity<Patient> findById(@ModelAttribute Patient patient,@PathVariable("id") Long id) {
     try {
         Optional<Patient> patientData = patientRepository.findById(patient.getId());
       if (patientData.isEmpty()) {
@@ -173,6 +173,17 @@ public class PatientController {
 
   }
 
+  // @GetMapping("/patient_details/{id}")
+  // public String viewProfile(@PathVariable Long id,@ModelAttribute("patient") Patient patient) {
+
+  //       Optional<Patient> patientData = patientRepository.findById(id);
+        
+  //       modelAndView.addObject("PhotosImagePath",patientData.get().getPhotosImagePath());
+  //       modelAndView.addObject("photos", patientData.get().getPhotosImagePath());
+  //       modelAndView.addObject("id", patientData.get().getId());
+  //           return "image";
+  //   }
+
   @PostMapping("/docs/{id}")
   public String savedoc(@RequestParam("document") MultipartFile multipartFile,
   @PathVariable (name = "id") Patient id) 
@@ -208,6 +219,20 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
       Documents _documents = documentsData.get();
+      return new ResponseEntity<>(documentsRepository.save(_documents), HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping("/document/patient/{id}")
+  public ResponseEntity<Documents> findByPatients(@ModelAttribute Documents documents,@PathVariable("id") Patient id) {
+    try {
+        List<Documents> documentsData = documentsRepository.findByPatients(id);
+      if (documentsData.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      Documents _documents = documentsData.get(0);
       return new ResponseEntity<>(documentsRepository.save(_documents), HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
