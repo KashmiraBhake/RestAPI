@@ -32,15 +32,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/patients/";
-  private static final String UPDATE_PATIENT_DOC_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-azure-butterfly-izyanh67.ws-us09.gitpod.io/api/documents/{id}";
+  private static final String GET_ALL_PATIENTS_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/documents/{id}";
+  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/document/patient/{id}";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************HOME BUTTON************************************************* */
@@ -274,9 +275,49 @@ public class PatientController {
   //***************************DOWNLOAD DOCUMENTS************************************************* */
 
   //***************************CHECK IF DOCUMENTS ARE PRESENT OR NOT************************************************* */
+  @RequestMapping(path = "/preview/{id}",method=RequestMethod.GET)
+    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("id") Long id)
+        {
+        
+           Map<String, Long> param = new HashMap<>();
+      param.put("id", id);
+      System.out.println(param);
+      ResponseEntity<Documents> result = restTemplate.getForEntity(GET_DOCUMENT_BY_PATIENTS_API,Documents.class,param);
+
+            if (result.getBody() == null){
+                return "redirect:/patient_details/{id}";
+        }   
+        else{
+            return "redirect:/patient_details_doc/{id}";
+       }       
+          
+    }
 
   //***************************VIEW WITH DOCUMENTS************************************************* */
 
   //***************************VIEW WITHOUT DOCUMENTS************************************************* */
+  @RequestMapping(path = "/patient_details/{id}",method=RequestMethod.GET)
+    public ModelAndView viewProfile(@PathVariable Long id,@ModelAttribute("patient") Patient patient)
+        {
+            ModelAndView modelAndView = new ModelAndView();
+
+           
+            Map<String, Long> param = new HashMap<>();
+            param.put("id", id);
+           
+            Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
+        
+            modelAndView.setViewName("patient_details");
+            modelAndView.addObject("patient",result);
+            modelAndView.addObject("PhotosImagePath",result.getPhotosImagePath());
+            modelAndView.addObject("firstName", result.getFirstName());
+            modelAndView.addObject("lastName", result.getLastName());
+            modelAndView.addObject("age", result.getAge());
+            modelAndView.addObject("gender", result.getGender());
+            modelAndView.addObject("city", result.getCity());
+            modelAndView.addObject("pincode", result.getPincode());
+            modelAndView.addObject("id", id);
+            return modelAndView;
+    }
 
 }

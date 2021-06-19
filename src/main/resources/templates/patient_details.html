@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+        <head>
+                <meta charset="UTF-8">
+                <title>Patient Details</title>
+                <link rel="stylesheet" type="text/css" href="/css/style.css">
+                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        </head>
+        <body>
+                <div class="full-page">
+                        <div class=navbar1>
+                                <a href="/">Healthcare<br> WebApp</a>
+                        </div>
+                        <div id="search-d-result"class="view-page">
+                                <div class="display-box1">
+                                        <div class="button-box1">
+                                                <div id='btn'></div>
+                                                <div type="text" class="txt" th:text= "${firstName} +' ' + ${lastName} + 's Profile'"></div>
+                                        </div>
+                                        <div class="images"><img th:src="@{${PhotosImagePath}}"class="pic" alt="Profile picture not found"></div>
+                                        <nav2>
+                                                <ul id='DisplayItems'>
+
+                                                        <li th:text="'Name: ' + ${firstName} + ' '+${lastName}"></li>
+                                                        <li th:text="'Age: ' + ${age}"></li>
+                                                        <li th:text="'Gender: ' + ${gender}"></li>
+                                                        <li th:text="'Address: ' + ${city} + ' - ' + ${pincode}"></li>
+                                                </ul>
+                                        </nav2>
+
+                                </div>
+                                <div class="display-box1">
+                                        <div class="button-box1">
+                                                <div id='btn'></div>
+                                                <div type="text" class="txt" th:text= "${firstName} +' ' + ${lastName} + 's Medical Record'"></div>
+                                        </div>
+                                        <div >
+
+                                                <a th:href="@{'/docs/' + ${patient.id}}"><i class="material-icons" id="style-doc">note_add</i></a>  
+                                                <div class="rand-txt">Click on the above icon to upload relevant documents</div> 
+                                        </div>
+                                        
+                                </div>
+                        </div>
+                </div>
+
+        </body>
+        
+</html>
