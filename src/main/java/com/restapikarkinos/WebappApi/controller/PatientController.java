@@ -201,7 +201,7 @@ public class PatientController {
   }
 
   @GetMapping("/documents/{id}")
-  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents,@PathVariable("id") String id) {
+  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents,@PathVariable("id") Long id) {
     try {
         Optional<Documents> documentsData = documentsRepository.findByDocId(documents.getId());
       if (documentsData.isEmpty()) {
@@ -238,6 +238,21 @@ public class PatientController {
     outputStream.close();
 
   }
+
+  @GetMapping("/preview/{id}")
+    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("id") Patient id, @ModelAttribute("patient") Patient patient)
+        {
+        
+            List<Documents> documentsData = documentsRepository.findByPatients(id);
+           
+            if (documentsData.isEmpty()){
+                return "Empty";
+        }   
+        else{
+            return "Not Empty";
+       }       
+          
+    }
 
 
   @RequestMapping("/upload")
