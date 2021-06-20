@@ -34,17 +34,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients/";
-  private static final String UPDATE_PATIENT_DOC_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/documents/{id}";
-  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/document/patient/{id}";
-  private static final String PAGINATION_PATIENT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/patients/";
+  private static final String GET_ALL_PATIENTS_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/findpatients/{id}";
+  private static final String UPDATE_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients/{id}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/documents/{id}";
+  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/document/patient/{id}";
+  private static final String PAGINATION_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients/";
   
   static RestTemplate restTemplate = new RestTemplate();
 

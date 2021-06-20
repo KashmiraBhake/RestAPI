@@ -11,11 +11,13 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.restapikarkinos.WebappApi.PaginatedResponse;
 import com.restapikarkinos.WebappApi.model.Doctor;
+import com.restapikarkinos.WebappApi.model.Patient;
 
-
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,12 +36,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 //@RequestMapping("/doctor")
 public class DoctorController {
-  private static final String GET_ALL_DOCTORS_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/doctors";
-  private static final String CREATE_DOCTOR_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/doctors";
-  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
-  private static final String GET_DOCTOR_BY_ID_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/finddoctors/{id}";
-  private static final String UPDATE_DOCTOR_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/doctors/{id}";  
-  private static final String DELETE_DOCTOR_API = "https://8080-pink-antelope-kg4q17af.ws-us09.gitpod.io/api/doctors/";
+  private static final String GET_ALL_DOCTORS_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/doctors";
+  private static final String CREATE_DOCTOR_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/doctors";
+  private static final String GET_DOCTOR_BY_SP_CT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/finddoctors/?specialization={specialization}&city={city}";
+  private static final String GET_DOCTOR_BY_ID_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/finddoctors/{id}";
+  private static final String UPDATE_DOCTOR_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/doctors/{id}";  
+  private static final String DELETE_DOCTOR_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/doctors/";
+  private static final String PAGINATION_DOCTOR_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/doctors/";
   static RestTemplate restTemplate = new RestTemplate();
 
     //***************************NEW DOCTOR FORM************************************************* */
@@ -82,23 +85,46 @@ public class DoctorController {
 
     //***************************VIEW ALL DOCTORS************************************************* */
     
-    @RequestMapping(value="/view_all_doctor",method=RequestMethod.GET)
-     private ModelAndView callGetAllDoctorsAPI() throws JsonMappingException, JsonProcessingException, RestClientException{
+    // @RequestMapping(value="/view_all_doctor",method=RequestMethod.GET)
+    //  private ModelAndView callGetAllDoctorsAPI() throws JsonMappingException, JsonProcessingException, RestClientException{
 
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+    //     //Doctor[] result = restTemplate.getForObject(GET_ALL_DOCTORS_API,Doctor[].class);
+    //     ObjectMapper mapper = new ObjectMapper();
+    //     List<Doctor> result = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_ALL_DOCTORS_API, String.class),Doctor[].class));
+    //     System.out.println(result.get(0).getFirstName());
+
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("view_all_doctor");
+    //     modelAndView.addObject("doctors", result);
+  
+    //     return modelAndView;
+    //  }
+
+     @RequestMapping(path = "/view_all_doctor/{page}", method = RequestMethod.GET)
+    public ModelAndView viewAllDoctorapi(@PathVariable("page") Integer page) {
+      System.out.println("***********************************************");
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-        //Doctor[] result = restTemplate.getForObject(GET_ALL_DOCTORS_API,Doctor[].class);
-        ObjectMapper mapper = new ObjectMapper();
-        List<Doctor> result = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_ALL_DOCTORS_API, String.class),Doctor[].class));
-        System.out.println(result.get(0).getFirstName());
-
+        System.out.println("***********************************************");
+        //ObjectMapper mapper = new ObjectMapper();
+        ParameterizedTypeReference<PaginatedResponse<Doctor>> responseType = new ParameterizedTypeReference<PaginatedResponse<Doctor>>() { };
+        ResponseEntity<PaginatedResponse<Doctor>> result = restTemplate.exchange(PAGINATION_DOCTOR_API+ "?page="+(page-1)+"&size=10", HttpMethod.GET, null, responseType);
+        System.out.println(result.getBody());
+        List<Doctor> doctors = result.getBody().getContent();
+        System.out.println("1111111111111111111111111111111111111111111111111111111111111111111");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("view_all_doctor");
-        modelAndView.addObject("doctors", result);
-  
+        modelAndView.addObject("doctors", doctors);
+        System.out.println("---------------------------------------------");
+        modelAndView.addObject("number", result.getBody().getNumber()+1);
+        modelAndView.addObject("totalPages", result.getBody().getTotalPages());
+        modelAndView.addObject("currentPage" , page);
+    
         return modelAndView;
-     }
+    }
       //***************************SEARCH DOCTOR FORM SPECIALIZATION & CITY************************************************* */
       @RequestMapping(path="/search_doctor_form",method=RequestMethod.GET)
       public ModelAndView search_doctor_form() {
