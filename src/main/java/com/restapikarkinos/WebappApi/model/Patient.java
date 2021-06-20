@@ -126,10 +126,10 @@ public class Patient {
   // public void setDocuments(List<Documents> documents) {
   //   this.documents = documents;
   // }
-  @Transient
-    public String getPhotosImagePath() {
-        if (photos == null || id == 0) return null;
-        return "/patient-photos/" + id + "/" + photos;
-    }
+  // @Transient
+  //   public String getPhotosImagePath() {
+  //       if (photos == null || id == 0) return null;
+  //       return "/patient-photos/" + id + "/" + photos;
+  //   }
 
 }
