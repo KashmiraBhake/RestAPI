@@ -322,7 +322,6 @@ public class PatientController {
 
             if (result.isEmpty() ){
               System.out.println("------======");
-              System.out.println(result.get(0).getDocName());
               System.out.println("------======------");
                 return "redirect:/patient_details/{patientId}";
         }   
