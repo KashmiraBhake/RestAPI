@@ -1,5 +1,6 @@
 package com.restapikarkinos.WebappApi.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -21,11 +22,11 @@ import javax.validation.constraints.Pattern;
 
 @Entity 
 @Table(name = "patient")
-public class Patient {
+public class Patient implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long patientId;
 
   @NotBlank
   @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$" , message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
@@ -72,12 +73,15 @@ public class Patient {
     // this.documents = documents;
   }
 
-  public Long getId() {
-    return id;
-}
-  public void setId(Long id) {
-    this.id = id;
+  
+  public Long getPatientId() {
+    return patientId;
   }
+
+  public void setPatientId(Long patientId) {
+    this.patientId = patientId;
+  }
+
   public String getFirstName() {
     return firstName;
   }

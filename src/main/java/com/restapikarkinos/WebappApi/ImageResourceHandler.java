@@ -22,8 +22,8 @@ public class ImageResourceHandler implements WebMvcConfigurer {
   
     }
     
-    @Override
-  public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addViewController("/").setViewName("redirect:/view.html");
- }
+//     @Override
+//   public void addViewControllers(ViewControllerRegistry registry) {
+//     registry.addViewController("/").setViewName("redirect:/view.html");
+//  }
 }

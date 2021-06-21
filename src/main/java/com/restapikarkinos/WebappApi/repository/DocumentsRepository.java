@@ -7,16 +7,23 @@ import com.restapikarkinos.WebappApi.model.Documents;
 import com.restapikarkinos.WebappApi.model.Patient;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface DocumentsRepository extends JpaRepository<Documents, Long> {
 
-    List<Documents> findByPatients(Patient patient_id);
+    List<Documents> findByPatients(Long id);
  
- Documents findByDocId(Long id);
+ Optional<Documents> findByDocId(Long id);
 
-Optional<Documents> findByDocId(Object id);
-   
- 
- 
+//Optional<Documents> findByDocId(Object id);
+
+//@Query("select * from document where patient_id = ?0")
+// List<Documents> findByPatientId(Patient id);
+
+List<Documents> findByPatients(Patient id);
+
+// Optional<Documents> findByPatientId(Long id);
+
+List<Documents> findByPatients_PatientId(Long id);
     
  }

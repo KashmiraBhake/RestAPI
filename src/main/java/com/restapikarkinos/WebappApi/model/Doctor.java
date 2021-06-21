@@ -1,13 +1,16 @@
 package com.restapikarkinos.WebappApi.model;
 
 import javax.validation.constraints.Pattern;
+
+import java.io.Serializable;
+
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "doctor")
-public class Doctor {
+public class Doctor implements Serializable {
 
   @Id
   private String id;

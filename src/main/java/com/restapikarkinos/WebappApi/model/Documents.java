@@ -1,5 +1,7 @@
 package com.restapikarkinos.WebappApi.model;
 
+import java.io.Serializable;
+
 //import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +16,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -25,28 +28,26 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity 
 @Table(name = "document")
-public class Documents {
+public class Documents implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long docId;
   private String docName;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "patient_id", referencedColumnName = "patientId", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("patient_id")
+    // @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+    // @JsonIdentityReference(alwaysAsId=true)
+   // @JsonProperty("patient_id")
+   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private Patient patients;
-
-  
-    
+      
   protected Documents() {
     
   }
- 
-    
-    public Documents(String docName,Patient patients){
+     
+    public Documents(String docName,Patient patients) {
       this.docName=docName;
       this.patients = patients;
 
@@ -75,21 +76,21 @@ public class Documents {
     public String getDocsFilePath() {
         if (docName == null || docId == 0) return null;
         // if (photos == null) return null;
-        return "/patient-docs/" + patients.getId() + "/" ;
+        return "/patient-docs/" + patients.getPatientId() + "/" ;
     }
 
 
-    public Object getId() {
-        return null;
-    }
+    // public Object getId() {
+    //     return null;
+    // }
 
 
-    public String getId(Patient id) {
-        return null;
-    }
+    // public String getId(Patient id) {
+    //     return null;
+    // }
 
 
-    public String getByPatients(Patient id) {
-        return null;
-    }
+    // public String getByPatients(Patient id) {
+    //     return null;
+    // }
 }

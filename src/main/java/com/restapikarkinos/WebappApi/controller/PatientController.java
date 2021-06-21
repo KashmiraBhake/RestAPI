@@ -47,7 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api")
 public class PatientController {
-    
+
   @Autowired
   PatientRepository patientRepository;
 
@@ -57,32 +57,32 @@ public class PatientController {
   // @GetMapping("/patients")
   // public ResponseEntity<List<Patient>> getAllPatient() {
   // try {
-  //     List<Patient> patients = new ArrayList<Patient>();
-    
-  //     patientRepository.findAll().forEach(patients::add);
-      
-  //     if (patients.isEmpty()) {
-  //       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  //     }
-  //     return new ResponseEntity<>(patients, HttpStatus.OK);
-  //   } catch (Exception e) {
-  //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
+  // List<Patient> patients = new ArrayList<Patient>();
+
+  // patientRepository.findAll().forEach(patients::add);
+
+  // if (patients.isEmpty()) {
+  // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  // }
+  // return new ResponseEntity<>(patients, HttpStatus.OK);
+  // } catch (Exception e) {
+  // return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+  // }
   // }
 
   @GetMapping("/patients")
-  public Page<Patient> getAllPatient( Pageable pageable) {
-      Page<Patient> patients = patientRepository.findAll(pageable);
-      return patients;
+  public Page<Patient> getAllPatient(Pageable pageable) {
+    Page<Patient> patients = patientRepository.findAll(pageable);
+    return patients;
   }
 
   @PostMapping("/patients")
   public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
-  try {
+    try {
       Patient _patient = patientRepository.save(patient);
       return new ResponseEntity<>(_patient, HttpStatus.CREATED);
     } catch (Exception e) {
-        return new ResponseEntity<>(patient, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(patient, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -90,20 +90,20 @@ public class PatientController {
   public ResponseEntity<List<Patient>> findByFirstName(@ModelAttribute Patient patient) {
     try {
       List<Patient> patients = patientRepository.findByFirstName(patient.getFirstName());
-    
+
       if (patients.isEmpty()) {
-          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
-        return new ResponseEntity<>(patients, HttpStatus.OK);
+      return new ResponseEntity<>(patients, HttpStatus.OK);
     } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  @GetMapping("/findpatients/{id}")
-  public ResponseEntity<Patient> findById(@ModelAttribute Patient patient,@PathVariable("id") Long id) {
+  @GetMapping("/findpatients/{patientId}")
+  public ResponseEntity<Patient> findByPatientId(@ModelAttribute Patient patient, @PathVariable("patientId") Long patientId) {
     try {
-        Optional<Patient> patientData = patientRepository.findById(patient.getId());
+      Optional<Patient> patientData = patientRepository.findById(patient.getPatientId());
       if (patientData.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
@@ -114,9 +114,9 @@ public class PatientController {
     }
   }
 
-  @PutMapping("/patients/{id}")
-  public ResponseEntity<Patient> updatePatient(@PathVariable("id") Long id, @RequestBody Patient patient) {
-    Optional<Patient> patientData = patientRepository.findById(id);
+  @PutMapping("/patients/{patientId}")
+  public ResponseEntity<Patient> updatePatient(@PathVariable("patientId") Long patientId, @RequestBody Patient patient) {
+    Optional<Patient> patientData = patientRepository.findById(patientId);
 
     if (patientData.isPresent()) {
       Patient _patient = patientData.get();
@@ -132,89 +132,77 @@ public class PatientController {
     }
   }
 
-  @DeleteMapping("/patients/{id}")
-  public ResponseEntity<HttpStatus> deletePatient(@PathVariable("id") Long id) {
+  @DeleteMapping("/patients/{patientId}")
+  public ResponseEntity<HttpStatus> deletePatient(@PathVariable("patientId") Long patientId) {
     try {
-      patientRepository.deleteById(id);
+      patientRepository.deleteById(patientId);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
-  @PostMapping(value = "/photos/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public String savePatientpic(@RequestParam("file") MultipartFile multipartFile, 
-  @PathVariable(name = "id") Long id)
-  throws IOException {
-  
-    System.out.println(id);
+  @PostMapping(value = "/photos/{patientId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public String savePatientpic(@RequestParam("file") MultipartFile multipartFile, @PathVariable(name = "patientId") Long patientId)
+      throws IOException {
+
+    System.out.println(patientId);
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
     // if(multipartFile.isEmpty()) {
-    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Request must contain file");
+    // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Request
+    // must contain file");
     // }
-    Optional<Patient> patientData = patientRepository.findById(id);
+    Optional<Patient> patientData = patientRepository.findById(patientId);
     Patient _patient = patientData.get();
     _patient.setPhotos(fileName);
 
     Patient savedPatient = patientRepository.save(_patient);
-    String uploadDir = "./patient-photos/" + savedPatient.getId();
+    String uploadDir = "./patient-photos/" + savedPatient.getPatientId();
     Path uploadPath = Paths.get(uploadDir);
     if (!Files.exists(uploadPath)) {
       Files.createDirectories(uploadPath);
     }
-    try(InputStream inputStream = multipartFile.getInputStream()){
+    try (InputStream inputStream = multipartFile.getInputStream()) {
       Path filePath = uploadPath.resolve(fileName);
       Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException ioe) {        
-        throw new IOException("Could not save image file: " + fileName, ioe);
+    } catch (IOException ioe) {
+      throw new IOException("Could not save image file: " + fileName, ioe);
     }
     // return new ResponseEntity<>(fileName, HttpStatus.OK);
     return fileName;
 
   }
 
-  // @GetMapping("/patient_details/{id}")
-  // public String viewProfile(@PathVariable Long id,@ModelAttribute("patient") Patient patient) {
-
-  //       Optional<Patient> patientData = patientRepository.findById(id);
-        
-  //       modelAndView.addObject("PhotosImagePath",patientData.get().getPhotosImagePath());
-  //       modelAndView.addObject("photos", patientData.get().getPhotosImagePath());
-  //       modelAndView.addObject("id", patientData.get().getId());
-  //           return "image";
-  //   }
-
-  @PostMapping("/docs/{id}")
-  public String savedoc(@RequestParam("document") MultipartFile multipartFile,
-  @PathVariable (name = "id") Patient id) 
-  throws IOException {
+  @PostMapping("/docs/{patientId}")
+  public String savedoc(@RequestParam("document") MultipartFile multipartFile, @PathVariable(name = "patientId") Patient patientId)
+      throws IOException {
 
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-    documentsRepository.save(new Documents(fileName, id));
-    List<Documents> documentsData = documentsRepository.findByPatients(id);
-     
+    documentsRepository.save(new Documents(fileName, patientId));
+    List<Documents> documentsData = documentsRepository.findByPatients(patientId);
+
     Documents _documents = documentsData.get(0);
     Documents savedDocuments = documentsRepository.save(_documents);
-    String uploadDir = "./patient-docs/" + savedDocuments.getPatients().getId();
+    String uploadDir = "./patient-docs/" + savedDocuments.getPatients().getPatientId();
     Path uploadPath = Paths.get(uploadDir);
     if (!Files.exists(uploadPath)) {
       Files.createDirectories(uploadPath);
     }
 
-    try(InputStream inputStream = multipartFile.getInputStream()) {
+    try (InputStream inputStream = multipartFile.getInputStream()) {
       Path filePath = uploadPath.resolve(fileName);
       Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException ioe) {        
-        throw new IOException("Could not save file: " + fileName, ioe);
+    } catch (IOException ioe) {
+      throw new IOException("Could not save file: " + fileName, ioe);
     }
     return "working";
 
   }
 
   @GetMapping("/documents/{id}")
-  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents,@PathVariable("id") Long id) {
+  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents, @PathVariable("id") Long id) {
     try {
-        Optional<Documents> documentsData = documentsRepository.findByDocId(documents.getId());
+      Optional<Documents> documentsData = documentsRepository.findByDocId(id);
       if (documentsData.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
@@ -225,60 +213,48 @@ public class PatientController {
     }
   }
 
-  @GetMapping("/document/patient/{id}")
-  public ResponseEntity<Documents> findByPatients(@ModelAttribute Documents documents,@PathVariable("id") Patient id) {
+  @GetMapping("/document/patient/{patientId}")
+  public ResponseEntity<List<Documents>> findByPatients(@PathVariable("patientId") Long patientId) {
+
     try {
-        List<Documents> documentsData = documentsRepository.findByPatients(id);
-      if (documentsData.isEmpty()) {
+      List<Documents> documentsData = documentsRepository.findByPatients_PatientId(patientId);
+
+      System.out.println("********************************"+documentsData.size());
+      if (documentsData.size() == 0) {
+        
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
-      Documents _documents = documentsData.get(0);
-      return new ResponseEntity<>(documentsRepository.save(_documents), HttpStatus.OK);
+
+      return new ResponseEntity<>(documentsData, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
   }
 
-  @GetMapping("/docs/{id}/{doc}")
-  public void downloadDoc(HttpServletResponse response,@PathVariable Patient id,
-  @PathVariable String doc,@ModelAttribute("patient") Patient patient) 
-  throws Exception {
-    List<Documents> result = documentsRepository.findByPatients(id);
+  @GetMapping("/docs/{patientId}/{doc}")
+  public void downloadDoc(HttpServletResponse response, @PathVariable Patient patientId, @PathVariable String doc,
+      @ModelAttribute("patient") Patient patient) throws Exception {
+    List<Documents> result = documentsRepository.findByPatients(patientId);
     Documents documents = result.get(0);
-       
+
     File file = new File("/workspace/RestAPI/." + documents.getDocsFilePath() + doc);
     response.setContentType("application/octet-stream");
     String headerKey = "Content-Disposition";
     String headerValue = "attachment; filename=" + doc;
-    response.setHeader(headerKey,headerValue);
+    response.setHeader(headerKey, headerValue);
     ServletOutputStream outputStream = response.getOutputStream();
     BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-    
+
     byte[] buffer = new byte[8192];
     int bytesRead = -1;
     while ((bytesRead = inputStream.read(buffer)) != -1) {
-        outputStream.write(buffer, 0, bytesRead);
-      }
+      outputStream.write(buffer, 0, bytesRead);
+    }
     inputStream.close();
     outputStream.close();
 
   }
-
-  @GetMapping("/preview/{id}")
-    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("id") Patient id, @ModelAttribute("patient") Patient patient)
-        {
-        
-            List<Documents> documentsData = documentsRepository.findByPatients(id);
-           
-            if (documentsData.isEmpty()){
-                return "Empty";
-        }   
-        else{
-            return "Not Empty";
-       }       
-          
-    }
-
 
   @RequestMapping("/upload")
   public void upload() throws IOException {
@@ -286,8 +262,8 @@ public class PatientController {
     BufferedReader br = new BufferedReader(reader);
     StringBuffer sbr = new StringBuffer();
     String line;
-        
-    while((line = br.readLine()) != null){
+
+    while ((line = br.readLine()) != null) {
       Gson gson = new Gson();
       Patient patient = gson.fromJson(line, Patient.class);
       patientRepository.save(patient);

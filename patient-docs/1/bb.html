@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Welcome Page</title>
+<script language="JavaScript" type="text/javascript">
+// create custom page and replace current document with it
+function rewritePage(form) {
+
+ var newPage = "<html>\n<head>\n<title>Page for ";
+ newPage += form.entry.value;
+ newPage += "</title>\n</head>\n<body bgcolor='cornflowerblue'>\n";
+ newPage += "<h1>Hello, " + form.entry.value + "!</h1>\n";
+ newPage += "</body>\n</html>";
+ // write it in one blast
+ document.write(newPage);
+ // close writing stream
+ document.close( );
+}
+</script>
+<body>
+<h1>Welcome!</h1>
+<hr>
+<form onsubmit="return false;">
+<p>Enter your name here: <input type="text" name="entry" id="entry"></P>
+<input type="button" value="New Custom Page" onclick="rewritePage(this.form);">
+</form>
+</body>
+</html>
