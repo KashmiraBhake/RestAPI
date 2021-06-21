@@ -26,11 +26,13 @@ import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,9 +42,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.io.FileUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -101,7 +105,8 @@ public class PatientController {
   }
 
   @GetMapping("/findpatients/{patientId}")
-  public ResponseEntity<Patient> findByPatientId(@ModelAttribute Patient patient, @PathVariable("patientId") Long patientId) {
+  public ResponseEntity<Patient> findByPatientId(@ModelAttribute Patient patient,
+      @PathVariable("patientId") Long patientId) {
     try {
       Optional<Patient> patientData = patientRepository.findById(patient.getPatientId());
       if (patientData.isEmpty()) {
@@ -115,7 +120,8 @@ public class PatientController {
   }
 
   @PutMapping("/patients/{patientId}")
-  public ResponseEntity<Patient> updatePatient(@PathVariable("patientId") Long patientId, @RequestBody Patient patient) {
+  public ResponseEntity<Patient> updatePatient(@PathVariable("patientId") Long patientId,
+      @RequestBody Patient patient) {
     Optional<Patient> patientData = patientRepository.findById(patientId);
 
     if (patientData.isPresent()) {
@@ -143,8 +149,8 @@ public class PatientController {
   }
 
   @PostMapping(value = "/photos/{patientId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public String savePatientpic(@RequestParam("file") MultipartFile multipartFile, @PathVariable(name = "patientId") Long patientId)
-      throws IOException {
+  public String savePatientpic(@RequestParam("file") MultipartFile multipartFile,
+      @PathVariable(name = "patientId") Long patientId) throws IOException {
 
     System.out.println(patientId);
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -173,9 +179,32 @@ public class PatientController {
 
   }
 
+  // @RequestMapping(value = "/image/{patientId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+
+  // public void getImage(HttpServletResponse response,  @PathVariable(name = "patientId") Long patientId,
+  // @ModelAttribute Patient patient) throws IOException {
+  //   System.out.println("****************1");
+  //   System.out.println(patientId);
+  //   var imgFile = new ClassPathResource("/workspace/RestAPI/patient-photos/" + patientId + "/" + "images.png");
+  //   System.out.println(patient.getPhotos());
+  //   response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+  //   StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
+  // }
+
+  // @GetMapping("/{filename}")
+  //   public ResponseEntity<byte[]> getImage(@PathVariable("filename") String filename) {
+  //       byte[] image = new byte[0];
+  //       try {
+  //           image = FileUtils.readFileToByteArray(new File("/workspace/RestAPI/patient-photos"+filename));
+  //       } catch (IOException e) {
+  //           throw new ImageNotFoundException();
+  //       }
+  //       return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+  //   }
+
   @PostMapping("/docs/{patientId}")
-  public String savedoc(@RequestParam("document") MultipartFile multipartFile, @PathVariable(name = "patientId") Patient patientId)
-      throws IOException {
+  public String savedoc(@RequestParam("document") MultipartFile multipartFile,
+      @PathVariable(name = "patientId") Patient patientId) throws IOException {
 
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
     documentsRepository.save(new Documents(fileName, patientId));
@@ -200,7 +229,8 @@ public class PatientController {
   }
 
   @GetMapping("/documents/{patientId}")
-  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents, @PathVariable("patientId") Long patientId) {
+  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents,
+      @PathVariable("patientId") Long patientId) {
     try {
       Optional<Documents> documentsData = documentsRepository.findByDocId(patientId);
       if (documentsData.isEmpty()) {
@@ -219,9 +249,9 @@ public class PatientController {
     try {
       List<Documents> documentsData = documentsRepository.findByPatients_PatientId(patientId);
 
-      System.out.println("********************************"+documentsData.size());
+      System.out.println("********************************" + documentsData.size());
       if (documentsData.size() == 0) {
-        
+
         return new ResponseEntity<>(documentsData, HttpStatus.OK);
       }
 
@@ -232,29 +262,47 @@ public class PatientController {
 
   }
 
-  // @GetMapping("/docs/{patientId}/{doc}")
-  // public void downloadDoc(HttpServletResponse response, @PathVariable Patient patientId, @PathVariable String doc,
-  //     @ModelAttribute("patient") Patient patient) throws Exception {
-  //   List<Documents> result = documentsRepository.findByPatients(patientId);
-  //   Documents documents = result.get(0);
+  @GetMapping("/docs/{patientId}/{doc}")
+  public void downloadDoc(HttpServletResponse response, @PathVariable Long patientId, @PathVariable String doc,
+      @ModelAttribute("patient") Patient patient) throws Exception {
+    System.out.println("*************1");
+    List<Documents> result = documentsRepository.findByPatients_PatientId(patientId);
+    Documents documents = result.get(0);
+    System.out.println("***********************************2");
+    System.out.println("--------------" + patientId);
+    File file = new File("/workspace/RestAPI/patient-docs" + "/" + patientId + "/" + doc);
+    // Path path = Paths.get("/workspace/RestAPI/patient-docs" + "/" + patientId +
+    // "/" + doc);
+    System.out.println("***********************************3");
+    response.setContentType("application/octet-stream");
+    String headerKey = "Content-Disposition";
+    String headerValue = "inline; filename=" + doc;
+    response.setHeader(headerKey, headerValue);
+    ServletOutputStream outputStream = response.getOutputStream();
+    BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+    System.out.println("***********************************4");
 
-  //   File file = new File("/workspace/RestAPI/." + documents.getDocsFilePath() + doc);
-  //   response.setContentType("application/octet-stream");
-  //   String headerKey = "Content-Disposition";
-  //   String headerValue = "attachment; filename=" + doc;
-  //   response.setHeader(headerKey, headerValue);
-  //   ServletOutputStream outputStream = response.getOutputStream();
-  //   BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+    byte[] buffer = new byte[8192];
+    System.out.println("***********************************5");
+    int bytesRead = -1;
+    System.out.println("***********************************6");
+    while ((bytesRead = inputStream.read(buffer)) != -1) {
+      outputStream.write(buffer, 0, bytesRead);
+    }
+    System.out.println("***********************************7");
+    inputStream.close();
+    outputStream.close();
 
-  //   byte[] buffer = new byte[8192];
-  //   int bytesRead = -1;
-  //   while ((bytesRead = inputStream.read(buffer)) != -1) {
-  //     outputStream.write(buffer, 0, bytesRead);
-  //   }
-  //   inputStream.close();
-  //   outputStream.close();
+    // return ResponseEntity.ok()
+    // .contentType(MediaType.parseMediaType(contentType))
+    // .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+    // resource.getFilename() + "\"")
+    // .body(resource);
+    // } else {
+    // return ResponseEntity.notFound().build();
+    // }
 
-  // }
+  }
 
   @RequestMapping("/upload")
   public void upload() throws IOException {
