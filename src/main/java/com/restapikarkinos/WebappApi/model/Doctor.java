@@ -1,7 +1,8 @@
 package com.restapikarkinos.WebappApi.model;
 
+import java.io.Serializable;
 
-public class Doctor {
+public class Doctor implements Serializable{
 
   private String id;
 

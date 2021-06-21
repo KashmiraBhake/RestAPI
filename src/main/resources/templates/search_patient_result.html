@@ -34,7 +34,7 @@
                                     </thead>
                                     <tbody>
                                         <tr th:each="patient : ${patients}" >
-                                            <td th:text="${patient.id}"></td>
+                                            <td th:text="${patient.patientId}"></td>
                                             <td th:text="${patient.firstName}"></td>
                                             <td th:text="${patient.lastName}"></td>
                                             <td th:text="${patient.age}"></td>
@@ -42,17 +42,17 @@
                                             <td th:text="${patient.city}"></td>
                                             <td th:text="${patient.pincode}"></td>
                                             <td>
-                                                <a th:href="@{'/edit/' + ${patient.id}}"><i class="material-icons">edit</i></a>
+                                                <a th:href="@{'/edit/' + ${patient.patientId}}"><i class="material-icons">edit</i></a>
 
-                                                <a th:href="@{'/delete/' + ${patient.id}}"><i class="material-icons">delete</i></a>
+                                                <a th:href="@{'/delete/' + ${patient.patientId}}"><i class="material-icons">delete</i></a>
                                             </td>
                                             <td>
-                                                <a th:href="@{'/upload_image/' + ${patient.id}}"><i class="material-icons">insert_photo</i></a>
+                                                <a th:href="@{'/upload_image/' + ${patient.patientId}}"><i class="material-icons">insert_photo</i></a>
                                 
-                                                <a th:href="@{'/upload_document/' + ${patient.id}}"><i class="material-icons">note_add</i></a>
+                                                <a th:href="@{'/upload_document/' + ${patient.patientId}}"><i class="material-icons">note_add</i></a>
                                             </td>
                                             <td>
-                                                <a th:href="@{'/preview/' + ${patient.id}}"><i class="material-icons">person</i></a>
+                                                <a th:href="@{'/preview/' + ${patient.patientId}}"><i class="material-icons">person</i></a>
                                             </td>
                                         </tr>
                                         </tbody>

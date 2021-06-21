@@ -1,8 +1,8 @@
 package com.restapikarkinos.WebappApi.model;
 
+import java.io.Serializable;
 
-
-public class Documents {
+public class Documents implements Serializable{
 
 
   private Long docId;

@@ -16,7 +16,7 @@
                                                 <div id='search-btn'></div>
                                                 <div type="text" class=txt>Upload patients' medical reports</div>
                                         </div>
-                                        <form action="#" th:action="@{'/docs/add/' + ${id}}"  method="post" enctype="multipart/form-data" class="input-group-search">
+                                        <form action="#" th:action="@{'/docs/add/' + ${patientId}}"  method="post" enctype="multipart/form-data" class="input-group-search">
                                               <input type="file" name="document" required class="input-field">
                                               <button type ="submit" value="Upload" class="submit-btn">Submit</button>
                                     </form>

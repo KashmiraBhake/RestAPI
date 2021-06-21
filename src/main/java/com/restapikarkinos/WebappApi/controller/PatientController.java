@@ -1,6 +1,7 @@
 package com.restapikarkinos.WebappApi.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +35,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  private static final String GET_ALL_PATIENTS_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/findpatients/{id}";
-  private static final String UPDATE_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients/{id}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients/";
-  private static final String UPDATE_PATIENT_DOC_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/documents/{id}";
-  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/document/patient/{id}";
-  private static final String PAGINATION_PATIENT_API = "https://8080-kumquat-elephant-6nq6c0oy.ws-us09.gitpod.io/api/patients/";
+  //private static final String GET_ALL_PATIENTS_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/findpatients/{patientId}";
+  private static final String UPDATE_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients/{patientId}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/documents/{patientId}";
+  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/document/patient/{patientId}";
+  private static final String PAGINATION_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients/";
   
   static RestTemplate restTemplate = new RestTemplate();
 
@@ -94,42 +95,37 @@ public class PatientController {
         }
         //***************************VIEW ALL PATIENTS************************************************* */
     
-    @RequestMapping(value="/view_all_patient",method=RequestMethod.GET)
-    private ModelAndView callGetAllPatientsAPI() throws JsonMappingException, JsonProcessingException, RestClientException{
+    // @RequestMapping(value="/view_all_patient",method=RequestMethod.GET)
+    // private ModelAndView callGetAllPatientsAPI() throws JsonMappingException, JsonProcessingException, RestClientException{
 
-       HttpHeaders headers = new HttpHeaders();
-       headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    //    HttpHeaders headers = new HttpHeaders();
+    //    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
       
-       ObjectMapper mapper = new ObjectMapper();
-       List<Patient> result = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_ALL_PATIENTS_API, String.class),Patient[].class));
-       System.out.println(result.get(0).getFirstName());
+    //    ObjectMapper mapper = new ObjectMapper();
+    //    List<Patient> result = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_ALL_PATIENTS_API, String.class),Patient[].class));
+    //    System.out.println(result.get(0).getFirstName());
 
-       ModelAndView modelAndView = new ModelAndView();
-       modelAndView.setViewName("view_all_patient");
-       modelAndView.addObject("patients", result);
+    //    ModelAndView modelAndView = new ModelAndView();
+    //    modelAndView.setViewName("view_all_patient");
+    //    modelAndView.addObject("patients", result);
  
-       return modelAndView;
-    }
+    //    return modelAndView;
+    // }
 
 
 
     @RequestMapping(path = "/view_all_patient/{page}", method = RequestMethod.GET)
     public ModelAndView viewAllPatientapi(@PathVariable("page") Integer page) {
-      System.out.println("***********************************************");
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        System.out.println("***********************************************");
-        //ObjectMapper mapper = new ObjectMapper();
         ParameterizedTypeReference<PaginatedResponse<Patient>> responseType = new ParameterizedTypeReference<PaginatedResponse<Patient>>() { };
         ResponseEntity<PaginatedResponse<Patient>> result = restTemplate.exchange(PAGINATION_PATIENT_API+ "?page="+(page-1)+"&size=10", HttpMethod.GET, null, responseType);
         System.out.println(result.getBody());
         List<Patient> patients = result.getBody().getContent();
-        System.out.println("1111111111111111111111111111111111111111111111111111111111111111111");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("view_all_patient");
         modelAndView.addObject("patients", patients);
-        System.out.println("---------------------------------------------");
         modelAndView.addObject("number", result.getBody().getNumber()+1);
         modelAndView.addObject("totalPages", result.getBody().getTotalPages());
         modelAndView.addObject("currentPage" , page);
@@ -147,26 +143,29 @@ public class PatientController {
     //***************************PATIENTS FIRST NAME********************************************************************* */
     @RequestMapping(path="/search_patient",method=RequestMethod.GET)
     private ModelAndView callGetPatientByFirstName(@RequestParam String firstName) throws JsonMappingException, JsonProcessingException, RestClientException{
-   
+   System.out.println("----->1");
       Map<String, String> param = new HashMap<>();
+      System.out.println("----->2");
       param.put("firstName", firstName);
-     
+      System.out.println("----->3");
       ModelAndView modelAndView = new ModelAndView();
-  
+      System.out.println("----->4");
       ObjectMapper mapper = new ObjectMapper();
+      System.out.println("----->5");
       List<Patient> patient = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_PATIENT_BY_FNAME_API, String.class,param),Patient[].class));
+      System.out.println("----->6");
       System.out.println(patient.get(0).getFirstName());
-
+      System.out.println("----->7");
       modelAndView.setViewName("search_patient_result");
       modelAndView.addObject("patients", patient);
       return modelAndView;
     }
      //***************************EDIT PATIENT FORM************************************************* */
-     @RequestMapping(value = "/edit/{id}",method=RequestMethod.GET)
-     public ModelAndView showEditPatientPage(@PathVariable(name = "id") Long id,@ModelAttribute("patient") Patient patient) throws JsonMappingException, JsonProcessingException, RestClientException {
+     @RequestMapping(value = "/edit/{patientId}",method=RequestMethod.GET)
+     public ModelAndView showEditPatientPage(@PathVariable(name = "patientId") Long patientId,@ModelAttribute("patient") Patient patient) throws JsonMappingException, JsonProcessingException, RestClientException {
      
        Map<String, Long> param = new HashMap<>();
-       param.put("id", id);
+       param.put("patientId", patientId);
       
        Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
        
@@ -181,13 +180,13 @@ public class PatientController {
          modelAndView.addObject("gender", result.getGender());
          modelAndView.addObject("city", result.getCity());
          modelAndView.addObject("pincode", result.getPincode());
-         modelAndView.addObject("id", id);
+         modelAndView.addObject("id", patientId);
         
          return modelAndView;
      }
       //***************************UPDATE PATIENT************************************************* */
-      @RequestMapping(value ="/update/{id}",method=RequestMethod.POST)
-      private ModelAndView callUpdatePatient(@PathVariable Long id, @ModelAttribute Patient patient,
+      @RequestMapping(value ="/update/{patientId}",method=RequestMethod.POST)
+      private ModelAndView callUpdatePatient(@PathVariable Long patientId, @ModelAttribute Patient patient,
       @RequestParam String firstName,
         @RequestParam String lastName,
         @RequestParam String age,
@@ -197,7 +196,7 @@ public class PatientController {
        
        
        Map<String, Long> param = new HashMap<>();
-       param.put("id", id);
+       param.put("patientId", patientId);
 
        ModelAndView modelAndView = new ModelAndView();
       Patient _patient = new Patient(firstName,lastName,age,gender,city,pincode,patient.getPhotos());
@@ -215,34 +214,34 @@ public class PatientController {
        return modelAndView;
       }
       //***************************DELETE PATIENT ************************************************************ */
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deletePatientApi(@PathVariable("id") Long id) {
-      System.out.println(DELETE_PATIENT_API+id);
-        restTemplate.delete(DELETE_PATIENT_API+id);
+    @RequestMapping(value = "/delete/{patientId}", method = RequestMethod.GET)
+    public String deletePatientApi(@PathVariable("patientId") Long patientId) {
+      System.out.println(DELETE_PATIENT_API+patientId);
+        restTemplate.delete(DELETE_PATIENT_API+patientId);
       
         return "redirect:/";       
     }
       //***************************UPLOAD PATIENT PHOTO FORM************************************************* */
 
-      @RequestMapping(path="/upload_image/{id}",method = RequestMethod.GET)
-    public ModelAndView showupload_pic_page(@PathVariable(name = "id") Long id,@ModelAttribute Patient patient) {
+      @RequestMapping(path="/upload_image/{patientId}",method = RequestMethod.GET)
+    public ModelAndView showupload_pic_page(@PathVariable(name = "patientId") Long patientId,@ModelAttribute Patient patient) {
       Map<String, Long> param = new HashMap<>();
-      param.put("id", id);
+      param.put("patientId", patientId);
       Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
    
 
     ModelAndView modelAndView = new ModelAndView();
     modelAndView.setViewName("upload_image");
     modelAndView.addObject("patient", result);
-    modelAndView.addObject("id", id);
+    modelAndView.addObject("patientId", patientId);
     return modelAndView;
     }
 
     //***************************UPLOAD PATIENT PHOTO ****************************************************** */
 
-    @RequestMapping(path="/photos/add/{id}",method=RequestMethod.POST)
+    @RequestMapping(path="/photos/add/{patientId}",method=RequestMethod.POST)
     public ModelAndView savePatientpic(@ModelAttribute Patient patient, @RequestParam("file") MultipartFile file, 
-    @PathVariable Long id) throws IOException{
+    @PathVariable Long patientId) throws IOException{
 
     Resource filebody = file.getResource();
     LinkedMultiValueMap<String, Object> fullfile = new LinkedMultiValueMap<>();
@@ -250,7 +249,7 @@ public class PatientController {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
     HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(fullfile, httpHeaders);
-    ResponseEntity<String>  resp = restTemplate.postForEntity(UPDATE_PATIENT_IMG_API+id, httpEntity, String.class);
+    ResponseEntity<String>  resp = restTemplate.postForEntity(UPDATE_PATIENT_IMG_API+patientId, httpEntity, String.class);
     System.out.println(resp.getBody());
 
       ModelAndView modelAndView = new ModelAndView();
@@ -260,28 +259,28 @@ public class PatientController {
 
     //***************************UPLOAD PATIENT DOCUMENT FORM************************************************* */
 
-    @RequestMapping(path="/upload_document/{id}",method = RequestMethod.GET)
-    public ModelAndView showupload_pdoc_page(@PathVariable(name = "id") Long id) {
+    @RequestMapping(path="/upload_document/{patientId}",method = RequestMethod.GET)
+    public ModelAndView showupload_pdoc_page(@PathVariable(name = "patientId") Long patientId) {
       Map<String, Long> param = new HashMap<>();
-      param.put("id", id);
-      System.out.println(id);
+      param.put("patientId", patientId);
+      System.out.println(patientId);
       Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
    
       System.out.println(result.getFirstName());
     ModelAndView modelAndView = new ModelAndView();
     modelAndView.setViewName("upload_document");
     modelAndView.addObject("patient", result);
-    modelAndView.addObject("id", id);
+    modelAndView.addObject("patientId", patientId);
     return modelAndView;
     }
     //***************************UPLOAD PATIENT DOCUMENT ****************************************************** */
 
-    @RequestMapping(path="/docs/add/{id}",method=RequestMethod.POST)
+    @RequestMapping(path="/docs/add/{patientId}",method=RequestMethod.POST)
     public ModelAndView savePatientdoc(@ModelAttribute Documents documents,
     @RequestParam("document") MultipartFile multipartFile,
-    @PathVariable ("id") Long id) throws IOException{
+    @PathVariable ("patientId") Long patientId) throws IOException{
       Map<String, Long> param = new HashMap<>();
-      param.put("id", id);
+      param.put("patientId", patientId);
       System.out.println(param);
       ResponseEntity<Documents> result = restTemplate.getForEntity(GET_DOCUMENT_BY_ID_API,Documents.class,param);
       System.out.println(result.getBody());
@@ -291,7 +290,7 @@ public class PatientController {
       HttpHeaders httpHeaders = new HttpHeaders();
       httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
       HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(fullfile, httpHeaders);
-      ResponseEntity<String>  resp = restTemplate.postForEntity(UPDATE_PATIENT_DOC_API+id, httpEntity, String.class);
+      ResponseEntity<String>  resp = restTemplate.postForEntity(UPDATE_PATIENT_DOC_API+patientId, httpEntity, String.class);
   
     System.out.println(resp.getBody());
   
@@ -304,41 +303,86 @@ public class PatientController {
   //***************************DOWNLOAD DOCUMENTS************************************************* */
 
   //***************************CHECK IF DOCUMENTS ARE PRESENT OR NOT************************************************* */
-  @RequestMapping(path = "/preview/{id}",method=RequestMethod.GET)
-    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("id") Long id)
+  @RequestMapping(path = "/preview/{patientId}",method=RequestMethod.GET)
+    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("patientId") Long patientId)
         {
         
            Map<String, Long> param = new HashMap<>();
-      param.put("id", id);
+      param.put("patientId", patientId);
       System.out.println(param);
       ResponseEntity<Documents> result = restTemplate.getForEntity(GET_DOCUMENT_BY_PATIENTS_API,Documents.class,param);
 
             if (result.getBody() == null){
-                return "redirect:/patient_details/{id}";
+              System.out.println(result.getBody().getPatients());
+                return "redirect:/patient_details/{patientId}";
         }   
         else{
-            return "redirect:/patient_details_doc/{id}";
+          System.out.println(result.getBody().getPatients());
+            return "redirect:/patient_details_doc/{patientId}";
        }       
           
     }
 
   //***************************VIEW WITH DOCUMENTS************************************************* */
+  @RequestMapping(path = "/patient_details_doc/{patientId}",method=RequestMethod.GET)
+  public ModelAndView viewProfileWithDoc(@ModelAttribute("documents") Documents documents, @PathVariable Long patientId,@ModelAttribute("patient") Patient patient) throws JsonMappingException, JsonProcessingException, RestClientException
+      {
+          ModelAndView modelAndView = new ModelAndView();
+          HttpHeaders headers = new HttpHeaders();
+          //System.out.println(documents.getPatients());
+       headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+          System.out.println("1111");
+          Map<String, Long> param = new HashMap<>();
+          param.put("patientId", patientId);
+          System.out.println("2222");
+          System.out.println(param);
+         ObjectMapper mapper = new ObjectMapper();
+       
+       System.out.println("3333");
+       //List<Documents> documentsData = restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API,List.class,param);
+          List<Documents> documentsData = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API,String.class,param),Documents[].class));
+          System.out.println("4444");
+          Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
+          System.out.println("5555");
+          System.out.println(documentsData.get(0).getDocName());
+      
+          modelAndView.setViewName("patient_details_doc");
+          modelAndView.addObject("patient",result);
+        //  modelAndView.addObject("PhotosImagePath",result.getPhotosImagePath());
+          modelAndView.addObject("photos",result.getPhotos());
+          modelAndView.addObject("firstName", result.getFirstName());
+          modelAndView.addObject("lastName", result.getLastName());
+          modelAndView.addObject("age", result.getAge());
+          modelAndView.addObject("gender", result.getGender());
+          modelAndView.addObject("city", result.getCity());
+          modelAndView.addObject("pincode", result.getPincode());
+          modelAndView.addObject("patientId", patientId);
+          List<String> docs = new ArrayList<>();
+        for(Documents docList : documentsData ) 
+        {
+            docs.add(docList.getDocName());    
+        modelAndView.addObject("docs", docs);
+        }
+        //modelAndView.addObject("docs", documentsData.getDocName());
+            return modelAndView;
+  }
 
   //***************************VIEW WITHOUT DOCUMENTS************************************************* */
-  @RequestMapping(path = "/patient_details/{id}",method=RequestMethod.GET)
-    public ModelAndView viewProfile(@PathVariable Long id,@ModelAttribute("patient") Patient patient)
+  @RequestMapping(path = "/patient_details/{patientId}",method=RequestMethod.GET)
+    public ModelAndView viewProfile(@PathVariable Long patientId,@ModelAttribute("patient") Patient patient)
         {
             ModelAndView modelAndView = new ModelAndView();
 
            
             Map<String, Long> param = new HashMap<>();
-            param.put("id", id);
+            param.put("patientId", patientId);
            
             Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API,Patient.class,param);
         
             modelAndView.setViewName("patient_details");
             modelAndView.addObject("patient",result);
-          //  modelAndView.addObject("PhotosImagePath",result.getPhotosImagePath());
+            modelAndView.addObject("PhotosImagePath",result.getPhotos());
             modelAndView.addObject("photos",result.getPhotos());
             modelAndView.addObject("firstName", result.getFirstName());
             modelAndView.addObject("lastName", result.getLastName());
@@ -346,7 +390,7 @@ public class PatientController {
             modelAndView.addObject("gender", result.getGender());
             modelAndView.addObject("city", result.getCity());
             modelAndView.addObject("pincode", result.getPincode());
-            modelAndView.addObject("id", id);
+            modelAndView.addObject("patientId", patientId);
             return modelAndView;
     }
 

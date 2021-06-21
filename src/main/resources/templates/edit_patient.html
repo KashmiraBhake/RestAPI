@@ -16,8 +16,8 @@
                                         <div id='btn'></div>
                                         <div type="text" class="txt">Enter details below</div>
                                 </div>
-                                <form id='login'action="#" th:action="@{'/update/' + ${id}}" th:object="${patient}"method="post"class="input-group-login">
-                                        <input type="text" name="id"th:field="*{id}" readonly="readonly" required class="input-field1">
+                                <form id='login'action="#" th:action="@{'/update/' + ${patientId}}" th:object="${patient}"method="post"class="input-group-login">
+                                        <input type="text" name="id"th:field="*{patientId}" readonly="readonly" required class="input-field1">
                                         <input type="text" name="firstName"th:field="*{firstName}" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
                                         <input type="text" name="lastName"th:field="*{lastName}" pattern="^[a-zA-Z0-9'.]{3,50}$" title="only alphabets, numbers, apostrophe, dot characters are allowed." required class="input-field1">
                                         <input type="number" name="age"th:field="*{age}" min="0" max="125" required class="input-field1">
