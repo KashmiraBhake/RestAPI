@@ -72,12 +72,12 @@ public class Documents implements Serializable {
       this.patients = patients;
     }
     
-    @Transient
-    public String getDocsFilePath() {
-        if (docName == null || docId == 0) return null;
-        // if (photos == null) return null;
-        return "/patient-docs/" + patients.getPatientId() + "/" ;
-    }
+    // @Transient
+    // public String getDocsFilePath() {
+    //     if (docName == null || docId == 0) return null;
+    //     // if (photos == null) return null;
+    //     return "/patient-docs/" + patients.getPatientId() + "/" ;
+    // }
 
 
     // public Object getId() {

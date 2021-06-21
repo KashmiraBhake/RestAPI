@@ -199,10 +199,10 @@ public class PatientController {
 
   }
 
-  @GetMapping("/documents/{id}")
-  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents, @PathVariable("id") Long id) {
+  @GetMapping("/documents/{patientId}")
+  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents, @PathVariable("patientId") Long patientId) {
     try {
-      Optional<Documents> documentsData = documentsRepository.findByDocId(id);
+      Optional<Documents> documentsData = documentsRepository.findByDocId(patientId);
       if (documentsData.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
@@ -222,7 +222,7 @@ public class PatientController {
       System.out.println("********************************"+documentsData.size());
       if (documentsData.size() == 0) {
         
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(documentsData, HttpStatus.OK);
       }
 
       return new ResponseEntity<>(documentsData, HttpStatus.OK);
@@ -232,29 +232,29 @@ public class PatientController {
 
   }
 
-  @GetMapping("/docs/{patientId}/{doc}")
-  public void downloadDoc(HttpServletResponse response, @PathVariable Patient patientId, @PathVariable String doc,
-      @ModelAttribute("patient") Patient patient) throws Exception {
-    List<Documents> result = documentsRepository.findByPatients(patientId);
-    Documents documents = result.get(0);
+  // @GetMapping("/docs/{patientId}/{doc}")
+  // public void downloadDoc(HttpServletResponse response, @PathVariable Patient patientId, @PathVariable String doc,
+  //     @ModelAttribute("patient") Patient patient) throws Exception {
+  //   List<Documents> result = documentsRepository.findByPatients(patientId);
+  //   Documents documents = result.get(0);
 
-    File file = new File("/workspace/RestAPI/." + documents.getDocsFilePath() + doc);
-    response.setContentType("application/octet-stream");
-    String headerKey = "Content-Disposition";
-    String headerValue = "attachment; filename=" + doc;
-    response.setHeader(headerKey, headerValue);
-    ServletOutputStream outputStream = response.getOutputStream();
-    BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+  //   File file = new File("/workspace/RestAPI/." + documents.getDocsFilePath() + doc);
+  //   response.setContentType("application/octet-stream");
+  //   String headerKey = "Content-Disposition";
+  //   String headerValue = "attachment; filename=" + doc;
+  //   response.setHeader(headerKey, headerValue);
+  //   ServletOutputStream outputStream = response.getOutputStream();
+  //   BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 
-    byte[] buffer = new byte[8192];
-    int bytesRead = -1;
-    while ((bytesRead = inputStream.read(buffer)) != -1) {
-      outputStream.write(buffer, 0, bytesRead);
-    }
-    inputStream.close();
-    outputStream.close();
+  //   byte[] buffer = new byte[8192];
+  //   int bytesRead = -1;
+  //   while ((bytesRead = inputStream.read(buffer)) != -1) {
+  //     outputStream.write(buffer, 0, bytesRead);
+  //   }
+  //   inputStream.close();
+  //   outputStream.close();
 
-  }
+  // }
 
   @RequestMapping("/upload")
   public void upload() throws IOException {

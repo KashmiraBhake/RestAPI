@@ -11,19 +11,19 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface DocumentsRepository extends JpaRepository<Documents, Long> {
 
-    List<Documents> findByPatients(Long id);
+    List<Documents> findByPatients(Long patientId);
  
- Optional<Documents> findByDocId(Long id);
+ Optional<Documents> findByDocId(Long patientId);
 
 //Optional<Documents> findByDocId(Object id);
 
 //@Query("select * from document where patient_id = ?0")
 // List<Documents> findByPatientId(Patient id);
 
-List<Documents> findByPatients(Patient id);
+List<Documents> findByPatients(Patient patientId);
 
 // Optional<Documents> findByPatientId(Long id);
 
-List<Documents> findByPatients_PatientId(Long id);
+List<Documents> findByPatients_PatientId(Long patientId);
     
  }
