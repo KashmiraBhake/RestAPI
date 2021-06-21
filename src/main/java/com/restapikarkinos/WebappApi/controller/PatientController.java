@@ -304,20 +304,30 @@ public class PatientController {
 
   //***************************CHECK IF DOCUMENTS ARE PRESENT OR NOT************************************************* */
   @RequestMapping(path = "/preview/{patientId}",method=RequestMethod.GET)
-    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("patientId") Long patientId)
+    public String previewProfile(@ModelAttribute("documents") Documents documents, @PathVariable("patientId") Long patientId) throws JsonMappingException, JsonProcessingException, RestClientException
         {
-        
+        System.out.println("#############");
            Map<String, Long> param = new HashMap<>();
+           System.out.println("#############1");
       param.put("patientId", patientId);
+      System.out.println("#############2");
       System.out.println(param);
-      ResponseEntity<Documents> result = restTemplate.getForEntity(GET_DOCUMENT_BY_PATIENTS_API,Documents.class,param);
+      System.out.println("#############3");
+      ObjectMapper mapper = new ObjectMapper();
+      System.out.println("----->5");
+      // List<Patient> patient = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_PATIENT_BY_FNAME_API, String.class,param),Patient[].class));
+      // System.out.println("----->6");
+      List<Documents> result = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API,String.class,param),Documents[].class));;
+      System.out.println("#############4");
 
-            if (result.getBody() == null){
-              System.out.println(result.getBody().getPatients());
+            if (result.isEmpty() ){
+              System.out.println("------======");
+              System.out.println(result.get(0).getDocName());
+              System.out.println("------======------");
                 return "redirect:/patient_details/{patientId}";
         }   
         else{
-          System.out.println(result.getBody().getPatients());
+          System.out.println(result.get(0).getDocName());
             return "redirect:/patient_details_doc/{patientId}";
        }       
           
