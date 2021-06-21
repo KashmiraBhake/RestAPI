@@ -1,11 +1,15 @@
 package com.restapikarkinos.WebappApi.controller;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -35,17 +39,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  //private static final String GET_ALL_PATIENTS_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/findpatients/{patientId}";
-  private static final String UPDATE_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients/{patientId}";  
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients/";
-  private static final String UPDATE_PATIENT_DOC_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/documents/{patientId}";
-  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/document/patient/{patientId}";
-  private static final String PAGINATION_PATIENT_API = "https://8080-chocolate-gazelle-dpj2de1t.ws-us08.gitpod.io/api/patients/";
+  //private static final String GET_ALL_PATIENTS_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/findpatients/{patientId}";
+  private static final String UPDATE_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients/{patientId}";  
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/documents/{patientId}";
+  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/document/patient/{patientId}";
+  private static final String PAGINATION_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients/";
+  private static final String DOCUMENT_DOWNLOAD_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/docs/{patientId}/{doc}";
   
   static RestTemplate restTemplate = new RestTemplate();
 
@@ -300,7 +305,6 @@ public class PatientController {
       return modelAndView;
     }
 
-  //***************************DOWNLOAD DOCUMENTS************************************************* */
 
   //***************************CHECK IF DOCUMENTS ARE PRESENT OR NOT************************************************* */
   @RequestMapping(path = "/preview/{patientId}",method=RequestMethod.GET)
@@ -402,5 +406,31 @@ public class PatientController {
             modelAndView.addObject("patientId", patientId);
             return modelAndView;
     }
+    //***************************DOWNLOAD DOCUMENTS************************************************* */
+  // @RequestMapping(path = "/downloads/{id}/{doc}",method=RequestMethod.GET)
+  // public void downloadDoc(HttpServletResponse response,@PathVariable Patient id,@PathVariable String doc,@ModelAttribute("patient") Patient patient) 
+  // throws Exception{
+  // }
+  @RequestMapping(path = "/downloads/{patientId}/{doc}",method=RequestMethod.GET)
+  public void downloadFile(@PathVariable Long patientId,@PathVariable String doc,@ModelAttribute("patient") Patient patient) throws IOException {
+    System.out.println("id--->"+patientId);
+    Map<String, Long> param = new HashMap<>();
+    System.out.println("#############1");
+param.put("patientId", patientId);
+    System.out.println("doc name --->"+doc);  
+    Map<String, String> param1 = new HashMap<>();
+    System.out.println("#############1");
+param1.put("doc", doc);
+    HttpHeaders headers = new HttpHeaders();
+    System.out.println("----------11");
+      headers.setAccept(Collections.singletonList(MediaType.MULTIPART_FORM_DATA));
+      System.out.println("----------22");
+      HttpEntity<String> entity = new HttpEntity<>(headers);
+      System.out.println("----------33");
+       restTemplate.getForObject(DOCUMENT_DOWNLOAD_API,Void.class,param,param1);
+      System.out.println("----------44");
+     // System.out.println(response);
+      //Files.write(Paths.get(doc), response.toString());
+  }
 
 }
