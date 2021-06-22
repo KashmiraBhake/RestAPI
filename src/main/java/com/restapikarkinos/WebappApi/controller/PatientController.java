@@ -1,12 +1,8 @@
 package com.restapikarkinos.WebappApi.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +19,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,35 +28,31 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import ch.qos.logback.classic.Logger;
 
 @Controller
 public class PatientController {
   // private static final String GET_ALL_PATIENTS_API =
-  // "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/findpatients/{patientId}";
-  private static final String UPDATE_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients/{patientId}";
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients/";
-  private static final String UPDATE_PATIENT_DOC_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/documents/{patientId}";
-  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/document/patient/{patientId}";
-  private static final String PAGINATION_PATIENT_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/patients/";
-  private static final String DOCUMENT_DOWNLOAD_API = "https://8080-blue-condor-789glqj9.ws-us08.gitpod.io/api/docs";
+  // "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/findpatients/{patientId}";
+  private static final String UPDATE_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients/{patientId}";
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/documents/{patientId}";
+  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/document/patient/{patientId}";
+  private static final String PAGINATION_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients/";
+ // private static final String DOCUMENT_DOWNLOAD_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/docs";
 
   static RestTemplate restTemplate = new RestTemplate();
 
-  // ***************************HOME
-  // BUTTON************************************************* */
+  // ***************************HOME BUTTON************************************************* */
 
   @RequestMapping("/")
   public ModelAndView home() {
@@ -71,8 +61,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************NEW PATIENT
-  // FORM************************************************* */
+  // ***************************NEW PATIENT FORM************************************************* */
 
   @RequestMapping("/new_patient")
   public ModelAndView new_patient() {
@@ -82,8 +71,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************NEW PATIENT
-  // SUBMIT************************************************ */
+  // ***************************NEW PATIENT SUBMIT************************************************ */
   @RequestMapping(path = "/create_new_patient", method = RequestMethod.POST)
   private ModelAndView callCreatePatientsAPI(@ModelAttribute Patient patient, @RequestParam String firstName,
       @RequestParam String lastName, @RequestParam String age, @RequestParam String gender, @RequestParam String city,
@@ -103,28 +91,7 @@ public class PatientController {
 
     return modelAndView;
   }
-  // ***************************VIEW ALL
-  // PATIENTS************************************************* */
-
-  // @RequestMapping(value="/view_all_patient",method=RequestMethod.GET)
-  // private ModelAndView callGetAllPatientsAPI() throws JsonMappingException,
-  // JsonProcessingException, RestClientException{
-
-  // HttpHeaders headers = new HttpHeaders();
-  // headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-  // ObjectMapper mapper = new ObjectMapper();
-  // List<Patient> result =
-  // Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_ALL_PATIENTS_API,
-  // String.class),Patient[].class));
-  // System.out.println(result.get(0).getFirstName());
-
-  // ModelAndView modelAndView = new ModelAndView();
-  // modelAndView.setViewName("view_all_patient");
-  // modelAndView.addObject("patients", result);
-
-  // return modelAndView;
-  // }
+  // ***************************VIEW ALL PATIENTS************************************************* */
 
   @RequestMapping(path = "/view_all_patient/{page}", method = RequestMethod.GET)
   public ModelAndView viewAllPatientapi(@PathVariable("page") Integer page) {
@@ -146,8 +113,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************SEARCH PATIENT FORM FIRST
-  // NAME*********************************************************** */
+  // ***************************SEARCH PATIENT FORM FIRST NAME*********************************************************** */
   @RequestMapping(path = "/search_patient_form", method = RequestMethod.GET)
   public ModelAndView search_patient_form() {
     ModelAndView modelAndView = new ModelAndView();
@@ -156,8 +122,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************PATIENTS FIRST
-  // NAME********************************************************************* */
+  // ***************************PATIENTS FIRST NAME********************************************************************* */
   @RequestMapping(path = "/search_patient", method = RequestMethod.GET)
   private ModelAndView callGetPatientByFirstName(@RequestParam String firstName)
       throws JsonMappingException, JsonProcessingException, RestClientException {
@@ -180,8 +145,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************EDIT PATIENT
-  // FORM************************************************* */
+  // ***************************EDIT PATIENT FORM************************************************* */
   @RequestMapping(value = "/edit/{patientId}", method = RequestMethod.GET)
   public ModelAndView showEditPatientPage(@PathVariable(name = "patientId") Long patientId,
       @ModelAttribute("patient") Patient patient)
@@ -208,8 +172,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************UPDATE
-  // PATIENT************************************************* */
+  // ***************************UPDATE PATIENT************************************************* */
   @RequestMapping(value = "/update/{patientId}", method = RequestMethod.POST)
   private ModelAndView callUpdatePatient(@PathVariable Long patientId, @ModelAttribute Patient patient,
       @RequestParam String firstName, @RequestParam String lastName, @RequestParam String age,
@@ -233,8 +196,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************DELETE PATIENT
-  // ************************************************************ */
+  // ***************************DELETE PATIENT ************************************************************ */
   @RequestMapping(value = "/delete/{patientId}", method = RequestMethod.GET)
   public String deletePatientApi(@PathVariable("patientId") Long patientId) {
     System.out.println(DELETE_PATIENT_API + patientId);
@@ -242,8 +204,7 @@ public class PatientController {
 
     return "redirect:/";
   }
-  // ***************************UPLOAD PATIENT PHOTO
-  // FORM************************************************* */
+  // ***************************UPLOAD PATIENT PHOTO FORM************************************************* */
 
   @RequestMapping(path = "/upload_image/{patientId}", method = RequestMethod.GET)
   public ModelAndView showupload_pic_page(@PathVariable(name = "patientId") Long patientId,
@@ -259,8 +220,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************UPLOAD PATIENT PHOTO
-  // ****************************************************** */
+  // ***************************UPLOAD PATIENT PHOTO ****************************************************** */
 
   @RequestMapping(path = "/photos/add/{patientId}", method = RequestMethod.POST)
   public ModelAndView savePatientpic(@ModelAttribute Patient patient, @RequestParam("file") MultipartFile file,
@@ -281,8 +241,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************UPLOAD PATIENT DOCUMENT
-  // FORM************************************************* */
+  // ***************************UPLOAD PATIENT DOCUMENT FORM************************************************* */
 
   @RequestMapping(path = "/upload_document/{patientId}", method = RequestMethod.GET)
   public ModelAndView showupload_pdoc_page(@PathVariable(name = "patientId") Long patientId) {
@@ -298,8 +257,7 @@ public class PatientController {
     modelAndView.addObject("patientId", patientId);
     return modelAndView;
   }
-  // ***************************UPLOAD PATIENT DOCUMENT
-  // ****************************************************** */
+  // ***************************UPLOAD PATIENT DOCUMENT ****************************************************** */
 
   @RequestMapping(path = "/docs/add/{patientId}", method = RequestMethod.POST)
   public ModelAndView savePatientdoc(@ModelAttribute Documents documents,
@@ -326,8 +284,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************CHECK IF DOCUMENTS ARE PRESENT OR
-  // NOT************************************************* */
+  // ***************************CHECK IF DOCUMENTS ARE PRESENT OR NOT************************************************* */
   @RequestMapping(path = "/preview/{patientId}", method = RequestMethod.GET)
   public String previewProfile(@ModelAttribute("documents") Documents documents,
       @PathVariable("patientId") Long patientId)
@@ -361,8 +318,7 @@ public class PatientController {
 
   }
 
-  // ***************************VIEW WITH
-  // DOCUMENTS************************************************* */
+  // ***************************VIEW WITH DOCUMENTS************************************************* */
   @RequestMapping(path = "/patient_details_doc/{patientId}", method = RequestMethod.GET)
   public ModelAndView viewProfileWithDoc(@ModelAttribute("documents") Documents documents, @PathVariable Long patientId,
       @ModelAttribute("patient") Patient patient)
@@ -409,8 +365,7 @@ public class PatientController {
     return modelAndView;
   }
 
-  // ***************************VIEW WITHOUT
-  // DOCUMENTS************************************************* */
+  // ***************************VIEW WITHOUT DOCUMENTS************************************************* */
   @RequestMapping(path = "/patient_details/{patientId}", method = RequestMethod.GET)
   public ModelAndView viewProfile(@PathVariable Long patientId, @ModelAttribute("patient") Patient patient) {
     ModelAndView modelAndView = new ModelAndView();
@@ -433,74 +388,4 @@ public class PatientController {
     modelAndView.addObject("patientId", patientId);
     return modelAndView;
   }
-
-  // ***************************DOWNLOAD DOCUMENTS************************************************* */
-  
-  @RequestMapping(path = "/downloads/{patientId}/{doc}", method = RequestMethod.GET)
-  public void downloadFile(@PathVariable Long patientId, @PathVariable String doc) throws IOException {
-    
-    
-    // RequestCallback requestCallback = request -> request
-    //         .getHeaders()
-    //         .setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
-
-    // // Streams the response instead of loading it all in memory
-    // ResponseExtractor<Void> responseExtractor = response -> {
-    //     // Here you can write the inputstream to a file or any other place
-    //     Path path = Paths.get(doc);
-    //     Files.copy(response.getBody(), path);
-    //     return null;
-    // };
-    // restTemplate.execute(DOCUMENT_DOWNLOAD_API + "/" + patientId + "/" + doc, HttpMethod.GET, requestCallback, responseExtractor);
-
-
-
-
-
-
-
-    // byte[] imageBytes  = restTemplate.getForObject(DOCUMENT_DOWNLOAD_API + "/" + patientId + "/" + doc, byte[].class);
-    //    Files.write(Paths.get(doc), imageBytes);
-    //     return "downloadsuccessfully";
-
-    
-        System.out.println("id--->" + patientId);
-    Map<String, String> param = new HashMap<>();
-    System.out.println("#############1");
-    param.put("patientId", patientId.toString());
-    System.out.println(patientId.toString());
-    System.out.println("doc name --->" + doc);
-    System.out.println("#############1");
-    param.put("doc", doc);
-    System.out.println(doc);
-    HttpHeaders headers = new HttpHeaders();
-    System.out.println("----------11");
-    headers.setAccept(Collections.singletonList(MediaType.MULTIPART_FORM_DATA));
-    System.out.println("----------22");
-    HttpEntity<String> entity = new HttpEntity<>(headers);
-    System.out.println("----------33");
-    ResponseEntity<byte[]> response = restTemplate.exchange(DOCUMENT_DOWNLOAD_API + "/" + patientId + "/" + doc, HttpMethod.GET,entity, byte[].class,param);
-    System.out.println("----------44");
-    System.out.println(response);
-    Files.write(Paths.get(doc), response.getBody());
-  }
-
-  // ********************************************************************************************************
-  // *//
-  // System.out.println("id--->"+patientId);
-  // RestTemplate restTemplate = new RestTemplate();
-  // restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-  // System.out.println("#############1");
-  // HttpHeaders headers = new HttpHeaders();
-  // headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-
-  // HttpEntity<String> entity = new HttpEntity<String>(headers);
-  // System.out.println("----------11");
-  // restTemplate.getForEntity(DOCUMENT_DOWNLOAD_API+ "/" + patientId+ "/" + doc,
-  // byte[].class);
-  // System.out.println("----------22");
-  // if (response.getStatusCode() == HttpStatus.OK) {
-  // Files.write(Paths.get(doc), response.getBody());
-  // }
-
 }
