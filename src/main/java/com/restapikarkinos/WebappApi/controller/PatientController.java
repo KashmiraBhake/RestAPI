@@ -26,13 +26,11 @@ import com.restapikarkinos.WebappApi.repository.DocumentsRepository;
 import com.restapikarkinos.WebappApi.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.io.FileUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -58,6 +55,7 @@ public class PatientController {
   @Autowired
   DocumentsRepository documentsRepository;
 
+  // *******************************************View All Patient*************************************************
   // @GetMapping("/patients")
   // public ResponseEntity<List<Patient>> getAllPatient() {
   // try {
@@ -80,6 +78,8 @@ public class PatientController {
     return patients;
   }
 
+  // ******************************************Create New Patient*******************************************************
+
   @PostMapping("/patients")
   public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
     try {
@@ -89,6 +89,8 @@ public class PatientController {
       return new ResponseEntity<>(patient, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // ******************************************Find Patient By FirstName*******************************************************
 
   @GetMapping("/findpatients")
   public ResponseEntity<List<Patient>> findByFirstName(@ModelAttribute Patient patient) {
@@ -104,6 +106,8 @@ public class PatientController {
     }
   }
 
+  // ******************************************Find Patient By PatientId*****************************************************
+
   @GetMapping("/findpatients/{patientId}")
   public ResponseEntity<Patient> findByPatientId(@ModelAttribute Patient patient,
       @PathVariable("patientId") Long patientId) {
@@ -118,6 +122,8 @@ public class PatientController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // ******************************************Update Patient*******************************************************
 
   @PutMapping("/patients/{patientId}")
   public ResponseEntity<Patient> updatePatient(@PathVariable("patientId") Long patientId,
@@ -138,6 +144,8 @@ public class PatientController {
     }
   }
 
+  // ******************************************Delete Patient*******************************************************
+
   @DeleteMapping("/patients/{patientId}")
   public ResponseEntity<HttpStatus> deletePatient(@PathVariable("patientId") Long patientId) {
     try {
@@ -148,8 +156,10 @@ public class PatientController {
     }
   }
 
+  // ******************************************Upload Image*******************************************************
+
   @PostMapping(value = "/photos/{patientId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public String savePatientpic(@RequestParam("file") MultipartFile multipartFile,
+  public String uploadImage(@RequestParam("file") MultipartFile multipartFile,
       @PathVariable(name = "patientId") Long patientId) throws IOException {
 
     System.out.println(patientId);
@@ -179,31 +189,32 @@ public class PatientController {
 
   }
 
-  // @RequestMapping(value = "/image/{patientId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+  // ******************************************Get Image*******************************************************
 
-  // public void getImage(HttpServletResponse response,  @PathVariable(name = "patientId") Long patientId,
-  // @ModelAttribute Patient patient) throws IOException {
-  //   System.out.println("****************1");
-  //   System.out.println(patientId);
-  //   var imgFile = new ClassPathResource("/workspace/RestAPI/patient-photos/" + patientId + "/" + "images.png");
-  //   System.out.println(patient.getPhotos());
-  //   response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-  //   StreamUtils.copy(imgFile.getInputStream(), response.getOutputStream());
-  // }
+  @RequestMapping(value = "/photos/{patientId}/{photos}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
 
-  // @GetMapping("/{filename}")
-  //   public ResponseEntity<byte[]> getImage(@PathVariable("filename") String filename) {
-  //       byte[] image = new byte[0];
-  //       try {
-  //           image = FileUtils.readFileToByteArray(new File("/workspace/RestAPI/patient-photos"+filename));
-  //       } catch (IOException e) {
-  //           throw new ImageNotFoundException();
-  //       }
-  //       return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
-  //   }
+  public void getImage(HttpServletResponse response, @PathVariable(name = "patientId") Long patientId,
+      @PathVariable String photos, @ModelAttribute Patient patient) throws IOException {
+
+    File file = new File("/workspace/RestAPI/patient-photos" + "/" + patientId + "/" + photos);
+    System.out.println(photos);
+    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+    ServletOutputStream outputStream = response.getOutputStream();
+    BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+    byte[] buffer = new byte[8192];
+    int bytesRead = -1;
+    while ((bytesRead = inputStream.read(buffer)) != -1) {
+      outputStream.write(buffer, 0, bytesRead);
+    }
+    inputStream.close();
+    outputStream.close();
+  }
+
+  // ******************************************Upload Document*******************************************************
 
   @PostMapping("/docs/{patientId}")
-  public String savedoc(@RequestParam("document") MultipartFile multipartFile,
+  public String uploaddocument(@RequestParam("document") MultipartFile multipartFile,
       @PathVariable(name = "patientId") Patient patientId) throws IOException {
 
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -224,37 +235,21 @@ public class PatientController {
     } catch (IOException ioe) {
       throw new IOException("Could not save file: " + fileName, ioe);
     }
-    return "working";
+    return "document uploaded";
 
   }
 
-  @GetMapping("/documents/{patientId}")
-  public ResponseEntity<Documents> findByDocId(@ModelAttribute Documents documents,
-      @PathVariable("patientId") Long patientId) {
-    try {
-      Optional<Documents> documentsData = documentsRepository.findByDocId(patientId);
-      if (documentsData.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-      Documents _documents = documentsData.get();
-      return new ResponseEntity<>(documentsRepository.save(_documents), HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+  // ******************************************Find Documents By PatientId*******************************************************
 
   @GetMapping("/document/patient/{patientId}")
   public ResponseEntity<List<Documents>> findByPatients(@PathVariable("patientId") Long patientId) {
 
     try {
       List<Documents> documentsData = documentsRepository.findByPatients_PatientId(patientId);
-
-      System.out.println("********************************" + documentsData.size());
-      if (documentsData.size() == 0) {
-
-        return new ResponseEntity<>(documentsData, HttpStatus.OK);
-      }
-
+      // System.out.println("********************************" + documentsData.size());
+      // if (documentsData.size() == 0) {
+      //   return new ResponseEntity<>(documentsData, HttpStatus.OK);
+      // }
       return new ResponseEntity<>(documentsData, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -262,47 +257,30 @@ public class PatientController {
 
   }
 
+  // ******************************************Download Document*******************************************************
+
   @GetMapping("/docs/{patientId}/{doc}")
-  public void downloadDoc(HttpServletResponse response, @PathVariable Long patientId, @PathVariable String doc,
+  public void downloadDocument(HttpServletResponse response, @PathVariable Long patientId, @PathVariable String doc,
       @ModelAttribute("patient") Patient patient) throws Exception {
-    System.out.println("*************1");
-    List<Documents> result = documentsRepository.findByPatients_PatientId(patientId);
-    Documents documents = result.get(0);
-    System.out.println("***********************************2");
+
     System.out.println("--------------" + patientId);
     File file = new File("/workspace/RestAPI/patient-docs" + "/" + patientId + "/" + doc);
-    // Path path = Paths.get("/workspace/RestAPI/patient-docs" + "/" + patientId +
-    // "/" + doc);
-    System.out.println("***********************************3");
     response.setContentType("application/octet-stream");
     String headerKey = "Content-Disposition";
     String headerValue = "inline; filename=" + doc;
     response.setHeader(headerKey, headerValue);
     ServletOutputStream outputStream = response.getOutputStream();
     BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-    System.out.println("***********************************4");
-
     byte[] buffer = new byte[8192];
-    System.out.println("***********************************5");
     int bytesRead = -1;
-    System.out.println("***********************************6");
     while ((bytesRead = inputStream.read(buffer)) != -1) {
       outputStream.write(buffer, 0, bytesRead);
     }
-    System.out.println("***********************************7");
     inputStream.close();
     outputStream.close();
-
-    // return ResponseEntity.ok()
-    // .contentType(MediaType.parseMediaType(contentType))
-    // .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-    // resource.getFilename() + "\"")
-    // .body(resource);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-
   }
+
+  // ******************************************Upload Data*******************************************************
 
   @RequestMapping("/upload")
   public void upload() throws IOException {

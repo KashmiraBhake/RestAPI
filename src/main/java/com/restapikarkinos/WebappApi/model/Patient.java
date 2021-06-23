@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -124,16 +123,4 @@ public class Patient implements Serializable {
   public void setPhotos(String photos) {
     this.photos = photos;
   }
-  // public List<Documents> getDocuments() {
-  //   return documents;
-  // }
-  // public void setDocuments(List<Documents> documents) {
-  //   this.documents = documents;
-  // }
-  // @Transient
-  //   public String getPhotosImagePath() {
-  //       if (photos == null || id == 0) return null;
-  //       return "/patient-photos/" + id + "/" + photos;
-  //   }
-
 }

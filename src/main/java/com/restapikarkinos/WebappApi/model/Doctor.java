@@ -16,11 +16,11 @@ public class Doctor implements Serializable {
   private String id;
 
   @NotBlank
-  @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$" , message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
+  @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$", message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
   private String firstName;
 
   @NotBlank
-  @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$",message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
+  @Pattern(regexp = "^[a-zA-Z0-9'.]{3,50}$", message = "only alphabets, numbers, apostrophe, dot characters are allowed, Firstname must be 3-50 characters long")
   private String lastName;
 
   @NotBlank
@@ -28,11 +28,11 @@ public class Doctor implements Serializable {
   private String specialization;
 
   @NotBlank
-  @Pattern(regexp="^[1-9][0-9]{9}$", message="Mobile number is invalid")
+  @Pattern(regexp = "^[1-9][0-9]{9}$", message = "Mobile number is invalid")
   private String phoneNumber;
 
   @NotBlank
-  @Pattern(regexp = "^[a-zA-Z0-9,'.]{10,2000}$",message = "Address must be min 10 and max 2000 chars long. only alphabets, numbers, comma, dot, apostrophe characters are allowed")
+  @Pattern(regexp = "^[a-zA-Z0-9,'.]{10,2000}$", message = "Address must be min 10 and max 2000 chars long. only alphabets, numbers, comma, dot, apostrophe characters are allowed")
   private String address;
 
   @NotBlank
@@ -40,14 +40,15 @@ public class Doctor implements Serializable {
   private String city;
 
   @NotBlank
-  @Pattern(regexp="^[1-9][0-9]{5}$", message="Pincode is invalid")
+  @Pattern(regexp = "^[1-9][0-9]{5}$", message = "Pincode is invalid")
   private String pincode;
 
   public Doctor() {
 
   }
 
-  public Doctor(String firstName, String lastName, String specialization, String phoneNumber, String address, String city, String pincode) {
+  public Doctor(String firstName, String lastName, String specialization, String phoneNumber, String address,
+      String city, String pincode) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.specialization = specialization;
@@ -125,7 +126,4 @@ public class Doctor implements Serializable {
   public String toString() {
     return super.toString();
   }
-
-  
-  
 }

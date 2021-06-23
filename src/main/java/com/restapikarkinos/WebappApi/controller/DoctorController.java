@@ -26,46 +26,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class DoctorController {
-    
+
   @Autowired
   DoctorRepository doctorRepository;
 
   // @GetMapping("/doctors")
   // public ResponseEntity<List<Doctor>> getAllDoctors() {
   // try {
-  //     List<Doctor> doctors = new ArrayList<Doctor>();
-    
-  //     doctorRepository.findAll().forEach(doctors::add);
-      
-  //     if (doctors.isEmpty()) {
-  //       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  //     }
-  //     return new ResponseEntity<>(doctors, HttpStatus.OK);
-  //   } catch (Exception e) {
-  //       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
+  // List<Doctor> doctors = new ArrayList<Doctor>();
+
+  // doctorRepository.findAll().forEach(doctors::add);
+
+  // if (doctors.isEmpty()) {
+  // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  // }
+  // return new ResponseEntity<>(doctors, HttpStatus.OK);
+  // } catch (Exception e) {
+  // return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+  // }
   // }
 
   @GetMapping("/doctors")
-  public Page<Doctor> getAllDoctors( Pageable pageable) {
-      Page<Doctor> doctors = doctorRepository.findAll(pageable);
-      return doctors;
+  public Page<Doctor> getAllDoctors(Pageable pageable) {
+    Page<Doctor> doctors = doctorRepository.findAll(pageable);
+    return doctors;
   }
 
   @PostMapping("/doctors")
   public ResponseEntity<Doctor> createDoctor(@Valid @RequestBody Doctor doctor) {
-  try {
+    try {
       Doctor _doctor = doctorRepository.save(doctor);
       return new ResponseEntity<>(_doctor, HttpStatus.CREATED);
     } catch (Exception e) {
-        return new ResponseEntity<>(doctor, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(doctor, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @GetMapping("/finddoctors/{id}")
-  public ResponseEntity<Doctor> findById(@ModelAttribute Doctor doctor,@PathVariable("id") String id) {
+  public ResponseEntity<Doctor> findById(@ModelAttribute Doctor doctor, @PathVariable("id") String id) {
     try {
-        Optional<Doctor> doctorData = doctorRepository.findById(doctor.getId());
+      Optional<Doctor> doctorData = doctorRepository.findById(doctor.getId());
       if (doctorData.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
@@ -79,14 +79,14 @@ public class DoctorController {
   @GetMapping("/finddoctors")
   public ResponseEntity<List<Doctor>> findBySpecialization(@ModelAttribute Doctor doctor) {
     try {
-        List<Doctor> doctors = doctorRepository.findBySpecializationAndCity(doctor.getSpecialization(), doctor.getCity());
-    
+      List<Doctor> doctors = doctorRepository.findBySpecializationAndCity(doctor.getSpecialization(), doctor.getCity());
+
       if (doctors.isEmpty()) {
-          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
       return new ResponseEntity<>(doctors, HttpStatus.OK);
     } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -112,10 +112,10 @@ public class DoctorController {
   @DeleteMapping("/doctors/{id}")
   public ResponseEntity<HttpStatus> deleteDoctor(@PathVariable("id") String id) {
     try {
-        doctorRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      doctorRepository.deleteById(id);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
