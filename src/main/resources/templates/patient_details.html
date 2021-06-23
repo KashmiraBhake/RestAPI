@@ -17,7 +17,7 @@
                                                 <div id='btn'></div>
                                                 <div type="text" class="txt" th:text= "${firstName} +' ' + ${lastName} + 's Profile'"></div>
                                         </div>
-                                        <div class="images"><img th:src="@{${PhotosImagePath}}"class="pic" alt="Profile picture not found"></div>
+                                        <div class="images"><img th:src="@{'https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/photos'+'/'+${patientId}+'/'+${photos}}"class="pic" alt="Profile picture not found"></div>
                                         <nav2>
                                                 <ul id='DisplayItems'>
 

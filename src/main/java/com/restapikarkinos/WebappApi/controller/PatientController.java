@@ -37,18 +37,18 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class PatientController {
   // private static final String GET_ALL_PATIENTS_API =
-  // "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients";
-  private static final String CREATE_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients";
-  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
-  private static final String GET_PATIENT_BY_ID_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/findpatients/{patientId}";
-  private static final String UPDATE_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients/{patientId}";
-  private static final String UPDATE_PATIENT_IMG_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/photos/";
-  private static final String DELETE_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients/";
-  private static final String UPDATE_PATIENT_DOC_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/documents/{patientId}";
-  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/document/patient/{patientId}";
-  private static final String PAGINATION_PATIENT_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/patients/";
- // private static final String DOCUMENT_DOWNLOAD_API = "https://8080-amethyst-tick-jfcwkpgd.ws-us08.gitpod.io/api/docs";
+  // "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients";
+  private static final String CREATE_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients";
+  private static final String GET_PATIENT_BY_FNAME_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
+  private static final String GET_PATIENT_BY_ID_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/findpatients/{patientId}";
+  private static final String UPDATE_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients/{patientId}";
+  private static final String UPDATE_PATIENT_IMG_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/photos/";
+  private static final String DELETE_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients/";
+  private static final String UPDATE_PATIENT_DOC_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/docs/";
+  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/documents/{patientId}";
+  private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/document/patient/{patientId}";
+  private static final String PAGINATION_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients/";
+ // private static final String DOCUMENT_DOWNLOAD_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/docs";
 
   static RestTemplate restTemplate = new RestTemplate();
 
@@ -347,7 +347,6 @@ public class PatientController {
 
     modelAndView.setViewName("patient_details_doc");
     modelAndView.addObject("patient", result);
-    // modelAndView.addObject("PhotosImagePath",result.getPhotosImagePath());
     modelAndView.addObject("photos", result.getPhotos());
     modelAndView.addObject("firstName", result.getFirstName());
     modelAndView.addObject("lastName", result.getLastName());
@@ -377,7 +376,6 @@ public class PatientController {
 
     modelAndView.setViewName("patient_details");
     modelAndView.addObject("patient", result);
-    modelAndView.addObject("PhotosImagePath", result.getPhotos());
     modelAndView.addObject("photos", result.getPhotos());
     modelAndView.addObject("firstName", result.getFirstName());
     modelAndView.addObject("lastName", result.getLastName());
