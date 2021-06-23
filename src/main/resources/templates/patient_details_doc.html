@@ -37,8 +37,6 @@
                                         <div th:each="doc: ${docs}">
                                                 <nav2>
                                                         <ul>
-                                                                
-                                                                <!-- <li><i class="material-icons"style="vertical-align:middle">article</i><a th:href="@{'/downloads/'+ ${patientId} + '/' + ${doc}}" th:text="' '+ ${doc}"></a></li> -->
                                                                 <li><i class="material-icons"style="vertical-align:middle">article</i><a th:href="@{'https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/docs' + '/' + ${patientId} + '/' + ${doc}}" th:text="' '+ ${doc}"></a></li>
                                                         </ul>
                                                         

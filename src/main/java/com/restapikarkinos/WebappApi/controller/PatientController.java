@@ -36,8 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PatientController {
-  // private static final String GET_ALL_PATIENTS_API =
-  // "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients";
+
   private static final String CREATE_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients";
   private static final String GET_PATIENT_BY_FNAME_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/findpatients/?firstName={firstName}";
   private static final String GET_PATIENT_BY_ID_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/findpatients/{patientId}";
@@ -45,10 +44,8 @@ public class PatientController {
   private static final String UPDATE_PATIENT_IMG_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/photos/";
   private static final String DELETE_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients/";
   private static final String UPDATE_PATIENT_DOC_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/docs/";
-  private static final String GET_DOCUMENT_BY_ID_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/documents/{patientId}";
   private static final String GET_DOCUMENT_BY_PATIENTS_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/document/patient/{patientId}";
   private static final String PAGINATION_PATIENT_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/patients/";
- // private static final String DOCUMENT_DOWNLOAD_API = "https://8080-apricot-tiger-sjwjyfje.ws-us08.gitpod.io/api/docs";
 
   static RestTemplate restTemplate = new RestTemplate();
 
@@ -126,20 +123,16 @@ public class PatientController {
   @RequestMapping(path = "/search_patient", method = RequestMethod.GET)
   private ModelAndView callGetPatientByFirstName(@RequestParam String firstName)
       throws JsonMappingException, JsonProcessingException, RestClientException {
-    System.out.println("----->1");
+  
     Map<String, String> param = new HashMap<>();
-    System.out.println("----->2");
     param.put("firstName", firstName);
-    System.out.println("----->3");
+ 
     ModelAndView modelAndView = new ModelAndView();
-    System.out.println("----->4");
     ObjectMapper mapper = new ObjectMapper();
-    System.out.println("----->5");
     List<Patient> patient = Arrays.asList(
         mapper.readValue(restTemplate.getForObject(GET_PATIENT_BY_FNAME_API, String.class, param), Patient[].class));
-    System.out.println("----->6");
+
     System.out.println(patient.get(0).getFirstName());
-    System.out.println("----->7");
     modelAndView.setViewName("search_patient_result");
     modelAndView.addObject("patients", patient);
     return modelAndView;
@@ -265,8 +258,8 @@ public class PatientController {
       throws IOException {
     Map<String, Long> param = new HashMap<>();
     param.put("patientId", patientId);
-    System.out.println(param);
-    ResponseEntity<Documents> result = restTemplate.getForEntity(GET_DOCUMENT_BY_ID_API, Documents.class, param);
+  
+    ResponseEntity<Documents> result = restTemplate.getForEntity(GET_PATIENT_BY_ID_API, Documents.class, param);
     System.out.println(result.getBody());
     Resource filebody = multipartFile.getResource();
     LinkedMultiValueMap<String, Object> fullfile = new LinkedMultiValueMap<>();
@@ -289,30 +282,16 @@ public class PatientController {
   public String previewProfile(@ModelAttribute("documents") Documents documents,
       @PathVariable("patientId") Long patientId)
       throws JsonMappingException, JsonProcessingException, RestClientException {
-    System.out.println("#############");
+ 
     Map<String, Long> param = new HashMap<>();
-    System.out.println("#############1");
     param.put("patientId", patientId);
-    System.out.println("#############2");
     System.out.println(param);
-    System.out.println("#############3");
     ObjectMapper mapper = new ObjectMapper();
-    System.out.println("----->5");
-    // List<Patient> patient =
-    // Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_PATIENT_BY_FNAME_API,
-    // String.class,param),Patient[].class));
-    // System.out.println("----->6");
-    List<Documents> result = Arrays.asList(mapper
-        .readValue(restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API, String.class, param), Documents[].class));
-    ;
-    System.out.println("#############4");
+    List<Documents> result = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API, String.class, param), Documents[].class));
 
     if (result.isEmpty()) {
-      System.out.println("------======");
-      System.out.println("------======------");
       return "redirect:/patient_details/{patientId}";
     } else {
-      System.out.println(result.get(0).getDocName());
       return "redirect:/patient_details_doc/{patientId}";
     }
 
@@ -325,25 +304,13 @@ public class PatientController {
       throws JsonMappingException, JsonProcessingException, RestClientException {
     ModelAndView modelAndView = new ModelAndView();
     HttpHeaders headers = new HttpHeaders();
-    // System.out.println(documents.getPatients());
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-    System.out.println("1111");
     Map<String, Long> param = new HashMap<>();
     param.put("patientId", patientId);
-    System.out.println("2222");
-    System.out.println(param);
+ 
     ObjectMapper mapper = new ObjectMapper();
-
-    System.out.println("3333");
-    // List<Documents> documentsData =
-    // restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API,List.class,param);
-    List<Documents> documentsData = Arrays.asList(mapper
-        .readValue(restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API, String.class, param), Documents[].class));
-    System.out.println("4444");
+    List<Documents> documentsData = Arrays.asList(mapper.readValue(restTemplate.getForObject(GET_DOCUMENT_BY_PATIENTS_API, String.class, param), Documents[].class));
     Patient result = restTemplate.getForObject(GET_PATIENT_BY_ID_API, Patient.class, param);
-    System.out.println("5555");
-    System.out.println(documentsData.get(0).getDocName());
 
     modelAndView.setViewName("patient_details_doc");
     modelAndView.addObject("patient", result);
@@ -360,7 +327,6 @@ public class PatientController {
       docs.add(docList.getDocName());
       modelAndView.addObject("docs", docs);
     }
-    // modelAndView.addObject("docs", documentsData.getDocName());
     return modelAndView;
   }
 
